@@ -37,23 +37,44 @@ void draw(SDL_Renderer* renderer, SDL_Texture* texture)
     SDL_RenderPresent(renderer);
 }
 
-void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
+void black_white_level(SDL_Surface* surface)
+{
+    Uint32* pixels = surface->pixels;
+    int len = surface->w * surface->h;
+    SDL_PixelFormat* format = surface->format;
+    Uint32 pixelRef = SDL_MapRGB(format, 128, 128, 128);
+    SDL_LockSurface(surface);
+    for(int i = 0; i < len; i++)
+    {
+        if(pixels[i] > pixelRef)
+            pixels[i] = SDL_MapRGB(format, 255, 255, 255);
+        else
+            pixels[i] = SDL_MapRGB(format, 0, 0, 0);
+    }
+    SDL_UnlockSurface(surface);
+}
+
+void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* blackwhite)
 {
    SDL_Event event;
-   
+   SDL_Texture* t = texture;
    while(1)
    {
        SDL_WaitEvent(&event);
        switch(event.type)
        {
-           case SDL_QUIT:
+            case SDL_QUIT:
                return;
-           case SDL_WINDOWEVENT:
+            case SDL_WINDOWEVENT:
                if(event.window.event == SDL_WINDOWEVENT_RESIZED)
                {
                    draw(renderer, texture);
                }
                break;
+            case SDL_KEYDOWN:
+                t = t == texture ? blackwhite : texture;
+                draw(renderer, t);
+                break;
        }
    }
 }

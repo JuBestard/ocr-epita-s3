@@ -31,9 +31,14 @@ int main(int argc, char** argv)
     apply_grayscale(surface);
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, surface);
+
+    black_white_level(surface);
+
+    SDL_Texture* blackwhite = SDL_CreateTextureFromSurface(renderer, surface);
+
     SDL_FreeSurface(surface);
     // - Dispatch the events.
-    event_loop(renderer, grayscale);
+    event_loop(renderer, grayscale, blackwhite);
     // - Destroy the objects.
     SDL_DestroyTexture(grayscale);
     SDL_DestroyRenderer(renderer);
