@@ -1,6 +1,35 @@
 #include "tools.h"
-#include <SDL2/SDL_render.h>
 #include "err.h"
+
+void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* blackwhite)
+{
+   SDL_Event event;
+   SDL_Texture* t = texture;
+   while(1)
+   {
+       SDL_WaitEvent(&event);
+       switch(event.type)
+       {
+            case SDL_QUIT:
+               return;
+            case SDL_WINDOWEVENT:
+               if(event.window.event == SDL_WINDOWEVENT_RESIZED)
+               {
+                   draw(renderer, texture);
+               }
+               break;
+            case SDL_KEYDOWN:
+                if(event.key.keysym.sym == SDLK_t)
+                {
+                    t = t == texture ? blackwhite : texture;
+                    draw(renderer, t);
+                }
+                if(event.key.keysym.sym == SDLK_ESCAPE)
+                    return;
+                break;
+       }
+   }
+}
 
 int main(int argc, char** argv)
 {
@@ -19,28 +48,30 @@ int main(int argc, char** argv)
     // - Create a renderer.
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     // - Create a surface from the colored image.
-    SDL_Surface* surface = Load_Image(argv[1]);
+    SDL_Surface* surface = load_image(argv[1]);
 
     // Gets the width and the height of the texture.
     int w = surface->w;
     int h = surface->h;
+    SDL_PixelFormat* format =surface-> format;
 
     // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, w, h);
-    // - Convert the surface into grayscale.
-    apply_grayscale(surface);
+
+    apply_grayscale(surface, format);
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, surface);
+    invert(surface,format, 1);
 
-    black_white_level(surface);
-
+    contrast(surface, format);
+    invert(surface, format, 0);
     SDL_Texture* blackwhite = SDL_CreateTextureFromSurface(renderer, surface);
-
     SDL_FreeSurface(surface);
     // - Dispatch the events.
     event_loop(renderer, grayscale, blackwhite);
     // - Destroy the objects.
     SDL_DestroyTexture(grayscale);
+    SDL_DestroyTexture(blackwhite);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
