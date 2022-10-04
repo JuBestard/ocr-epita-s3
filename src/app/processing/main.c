@@ -1,7 +1,7 @@
 #include "tools.h"
 #include "err.h"
 
-void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* blackwhite)
+void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* blackwhite, SDL_Texture* negatif)
 {
    SDL_Event event;
    SDL_Texture* t = texture;
@@ -23,6 +23,10 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* black
                 {
                     t = t == texture ? blackwhite : texture;
                     draw(renderer, t);
+                }
+                if(event.key.keysym.sym == SDLK_n)
+                {
+                    draw(renderer, negatif);
                 }
                 if(event.key.keysym.sym == SDLK_ESCAPE)
                     return;
@@ -63,12 +67,14 @@ int main(int argc, char** argv)
     SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, surface);
     invert(surface,format, 1);
 
+    SDL_Texture* negatif = SDL_CreateTextureFromSurface(renderer, surface);
+
     contrast(surface, format);
     invert(surface, format, 0);
     SDL_Texture* blackwhite = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     // - Dispatch the events.
-    event_loop(renderer, grayscale, blackwhite);
+    event_loop(renderer, grayscale, blackwhite, negatif);
     // - Destroy the objects.
     SDL_DestroyTexture(grayscale);
     SDL_DestroyTexture(blackwhite);
