@@ -15,7 +15,7 @@ int nand(int i1, int i2)
 
 int or(int i1, int i2)
 {
-	return i1*w_or + i2*w_or >= threshold_or ? 1 : 0;	
+	return i1*w_or + i2*w_or >= threshold_or ? 1 : 0;
 }
 
 int xor(int i1, int i2)
