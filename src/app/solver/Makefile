@@ -18,7 +18,7 @@ all: ${PRG}
 
 clean:
 	${RM} ${OBJ}
-	${RM} main
+	${RM} ${PRG}
 
 # END
 

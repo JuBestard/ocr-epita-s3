@@ -73,23 +73,27 @@ int Solve(int board[N][N])
 //main function to solve the board
 {
     //init variables
-    int row, col;
-
-    //check if there is empty cell left or not
-    if (FindEmpty(board) == False)
-        return True;
-
-    //check each value from 1 to 9 and if it's a correct move
-    for (int val = 1; val <= N; val ++)
+    for(int row = 0; row < N; row++)
     {
-        if(IsValid(board, row, col, val))
+        for(int col = 0; col < N; col++)
         {
-            board[row][col] = val;
-
-            if(Solve(board))
+            //check if there is empty cell left or not
+            if (FindEmpty(board) == False)
                 return True;
 
-            board[row][col] = val;
+            //check each value from 1 to 9 and if it's a correct move
+            for (int val = 1; val <= N; val ++)
+            {
+                if(IsValid(board, row, col, val))
+                {
+                    board[row][col] = val;
+
+                    if(Solve(board))
+                        return True;
+
+                    board[row][col] = val;
+                }
+            }
         }
     }
     return False;
