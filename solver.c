@@ -55,14 +55,14 @@ int IsValid(int board[N][N], int row, int col, int val)
     return False;
 }
 
-int FindEmpty(int board[N][N], int* row, int* col)
+int FindEmpty(int board[N][N])
 //find the first cell with no value
 {
-    for (row = 0; row < N; row++)
+    for (int row = 0; row < N; row++)
     {
-        for (col = 0; col < N; row++)
+        for (int col = 0; col < N; row++)
         {
-            if(board[N][N] = EMPTY)
+            if(board[row][col] = EMPTY)
                 return True;
         }
     }
@@ -111,5 +111,17 @@ void printGrid(int board[N][N])
 
 int main()
 {
+    int grid[N][N] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
+                       { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
+                       { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
+                       { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
+                       { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
+                       { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
+                       { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
+                       { 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
+
+    Solve(grid);
+    printGrid(grid);
     return 0;
 }
