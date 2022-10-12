@@ -10,14 +10,14 @@ const int EMPTY = 0;
 
 
 int RowCheck(int board[N][N], int row, int val)
-//check if a value is in the given row
 {
+    //check if a value is in the given row
     for (int col = 0; col < N; col++)
     {
         if (board[row][col] == val)
             return True;
-        return False;
     }
+    return False;
 }
 
 int ColCheck(int board[N][N], int col, int val)
@@ -27,8 +27,8 @@ int ColCheck(int board[N][N], int col, int val)
     {
         if (board[row][col] == val)
             return True;
-        return False;
-    }   
+    }
+    return False;
 }
 
 int BoxCheck(int board[N][N], int boxStartRow, int boxStartCol, int val)
@@ -62,7 +62,7 @@ int FindEmpty(int board[N][N])
     {
         for (int col = 0; col < N; row++)
         {
-            if(board[row][col] = EMPTY)
+            if(board[row][col] == EMPTY)
                 return True;
         }
     }
@@ -76,7 +76,7 @@ int Solve(int board[N][N])
     int row, col;
 
     //check if there is empty cell left or not
-    if (FindEmpty == False)
+    if (FindEmpty(board) == False)
         return True;
 
     //check each value from 1 to 9 and if it's a correct move
@@ -86,7 +86,7 @@ int Solve(int board[N][N])
         {
             board[row][col] = val;
 
-            if(SolveSudoku(board))
+            if(Solve(board))
                 return True;
 
             board[row][col] = val;
@@ -111,7 +111,7 @@ void printGrid(int board[N][N])
 
 int main()
 {
-    int grid[N][N] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
+    int grid[9][9] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
                        { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
                        { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
                        { 0, 0, 3, 0, 1, 0, 0, 8, 0 },

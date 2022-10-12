@@ -6,11 +6,11 @@ CFLAGS = -Wall -Wextra
 LDFLAGS =
 LDLIBS =
 
-SRC = solve.c
+SRC = solver.c
 OBJ = ${SRC:.c=.o}
-DEP = ${SRC:.c=.d}
+PRG = ${SRC:.c=}
 
-main: ${OBJ}
+all: ${PRG}
 
 -include ${DEP}
 
@@ -18,7 +18,6 @@ main: ${OBJ}
 
 clean:
 	${RM} ${OBJ}
-	${RM} ${DEP}
 	${RM} main
 
 # END
