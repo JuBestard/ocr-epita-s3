@@ -3,7 +3,8 @@ CPPFLAGS = -lm -MMD
 CFLAGS = -Wall -Wextra -std=c99 -O3
 
 SRC = xor.c neuron.c
-OBJ = neuron.o xor.o
+OBJ = ${SRC:.c=.o}
+DEP = ${SRC:.c=.d}
 PRG = xor
 
 all: xor
@@ -13,7 +14,7 @@ xor: $(OBJ)
 
 
 clean:
-	rm -f *.o ${DEP}
+	rm -f ${OBJ} ${DEP}
 	rm -f ${PRG}
 
 .PHONY: all cleanCC=gcc
