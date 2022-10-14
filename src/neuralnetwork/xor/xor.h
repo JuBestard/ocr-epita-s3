@@ -1,13 +1,8 @@
 #ifndef XOR_H
 #define XOR_H
 
-double sigmoid(double x);
-double dsigmoid(double x);
+#include "neuron.h"
 
-double calculateOutputHidden(int input);
-double calculateOutputOut();
-
-double initWB();
-void train(int epoc);
+void train(int epoch);
 
 #endif
