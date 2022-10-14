@@ -2,13 +2,15 @@ CC = gcc
 CPPFLAGS = -lm -MMD
 CFLAGS = -Wall -Wextra -std=c99 -O3
 
-SRC = xor.c
-DEP = ${SRC:.c=.d}
-PRG = ${SRC:.c}
+SRC = xor.c neuron.c
+OBJ = neuron.o xor.o
+PRG = xor
 
-main: xor
+all: xor
 
--include ${DEP}
+xor: $(OBJ)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $(PRG) $(OBJ) 
+
 
 clean:
 	rm -f *.o ${DEP}
