@@ -1,5 +1,5 @@
 #include "solver.h"
-
+#include "err.h"
 int IsBoardValid(int board[][9])
 {
     for(int i = 1; i <= 9; i++)
@@ -54,3 +54,34 @@ int IsSolved(int board[9][9])
     return 1;
 }
 
+Tuple FindEmpty(int board[9][9])
+{
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            if (board[i][j] == 0)
+            {
+                Tuple tuple = {i,j};
+                return tuple;
+            }
+        }
+    }
+
+    errx(1,"No more empty cell");
+}
+
+int Solve(int board[9][9])
+{
+    if(IsSolved(board) == 1)
+        return 1;
+    Tuple empty = FindEmpty(board);
+    for(int k = 1; k <= 9; k++)
+    {
+        board[empty.x][empty.y] = k;
+        if(IsBoardValid(board) == 1&& Solve(board) == 1)
+            return 1;
+        board[empty.x][empty.y] = 0;
+        return 0;
+    }
+}
