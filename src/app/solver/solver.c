@@ -1,5 +1,7 @@
 #include "solver.h"
 #include "err.h"
+#include <stdio.h>
+
 int IsBoardValid(int board[][9])
 {
     for(int i = 1; i <= 9; i++)
@@ -84,4 +86,34 @@ int Solve(int board[9][9])
         board[empty.x][empty.y] = 0;
         return 0;
     }
+}
+
+
+void printGrid(int board[9][9])
+{
+    for (int row = 0; row < 9; row ++)
+    {
+        for (int col = 0; col <9 ; col ++)
+        {
+            printf("%2d", board[row][col]);
+        }
+        printf("\n");
+    }
+}
+
+int main()
+{
+    int grid[9][9] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
+                       { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
+                       { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
+                       { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
+                       { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
+                       { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
+                       { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
+                       { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
+                       { 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
+
+    Solve(grid);
+    printGrid(grid);
+    return 0;
 }
