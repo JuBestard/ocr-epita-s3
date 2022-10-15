@@ -2,7 +2,7 @@
 #include "err.h"
 #include <stdio.h>
 
-int IsBoardValid(int board[][9])
+int IsBoardValid(int board[9][9])
 {
     for(int i = 1; i <= 9; i++)
     {
@@ -17,7 +17,7 @@ int IsBoardValid(int board[][9])
                 if(board[k][j] == i)
                     col += 1;
                 if(col > 1 || lig > 1)
-                    return 1;
+                    return 0;
             }
         }
 
@@ -81,11 +81,11 @@ int Solve(int board[9][9])
     for(int k = 1; k <= 9; k++)
     {
         board[empty.x][empty.y] = k;
-        if(IsBoardValid(board) == 1&& Solve(board) == 1)
+        if(IsBoardValid(board) == 1 && Solve(board) == 1)
             return 1;
-        board[empty.x][empty.y] = 0;
-        return 0;
     }
+    board[empty.x][empty.y] = 0;
+    return 0;
 }
 
 

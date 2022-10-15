@@ -3,8 +3,8 @@
 
 typedef struct Tuple
 {
-    int x = 0;
-    int y = 0;
+    int x;
+    int y;
 } Tuple;
 
 int IsBoardValid(int board[9][9]);
