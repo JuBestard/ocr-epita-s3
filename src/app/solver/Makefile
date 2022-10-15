@@ -1,20 +1,18 @@
-# Makefile
-
 CC = gcc
-CPPFLAGS = -MMD
-CFLAGS = -Wall -Wextra
+CPPFLAGS = -lm -MMD
+CFLAGS = -Wall -Wextra -std=c99 -O3
 
-SRC = solver.c
+SRC = load_save.c solver.c
 OBJ = ${SRC:.c=.o}
-PRG = ${SRC:.c=}
+DEP = ${SRC:.c=.d}
+PRG = solver
 
-all: ${PRG}
+solver: $(OBJ)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $(PRG) $(OBJ) 
 
-.PHONY: clean
 
 clean:
-	${RM} ${OBJ}
-	${RM} ${PRG}
+	rm -f ${OBJ} ${DEP}
+	rm -f ${PRG}
 
-# END
-
+.PHONY: all cleanCC=gcc
