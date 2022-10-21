@@ -1,10 +1,12 @@
-#include "tools.h"
+#include "binarization.h"
+#include "grayscale.h"
 #include "err.h"
+#include "tools.h"
 
-void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* blackwhite)
+void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 {
    SDL_Event event;
-   SDL_Texture* t = texture;
+   //SDL_Texture* t = texture;
    while(1)
    {
        SDL_WaitEvent(&event);
@@ -19,11 +21,11 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Texture* black
                }
                break;
             case SDL_KEYDOWN:
-                if(event.key.keysym.sym == SDLK_t)
+                /*(event.key.keysym.sym == SDLK_t)
                 {
                     t = t == texture ? blackwhite : texture;
                     draw(renderer, t);
-                }
+                }*/
                 if(event.key.keysym.sym == SDLK_ESCAPE)
                     return;
                 break;
@@ -57,21 +59,15 @@ int main(int argc, char** argv)
 
     // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, w, h);
-
-    apply_grayscale(surface, format);
+    binarize(surface);
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, surface);
-    invert(surface,format, 1);
-
-    contrast(surface, format);
-    invert(surface, format, 0);
-    SDL_Texture* blackwhite = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     // - Dispatch the events.
-    event_loop(renderer, grayscale, blackwhite);
+    event_loop(renderer, grayscale);
     // - Destroy the objects.
     SDL_DestroyTexture(grayscale);
-    SDL_DestroyTexture(blackwhite);
+    //SDL_DestroyTexture(blackwhite);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
