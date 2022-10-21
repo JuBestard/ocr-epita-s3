@@ -19,7 +19,7 @@ void train(int epoch)
 
     for (int j = 0; j < epoch; j++)
     {
-        printf("################## epoch %d ##################\n", j);
+        printf("################## epoch %d ##################\n", j+1);
         for (int i = 0; i < 4; i++) 
         {
             hidden1.inputs[0]=train_inputs[i][0];
