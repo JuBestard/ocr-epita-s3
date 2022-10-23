@@ -1,5 +1,5 @@
-#include "binarization.h"
-#include "grayscale.h"
+#include "processing/binarization.h"
+#include "processing/grayscale.h"
 #include "err.h"
 #include "tools.h"
 
@@ -62,6 +62,7 @@ int main(int argc, char** argv)
     binarize(surface);
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_SaveBMP(surface, "out.bmp");
     SDL_FreeSurface(surface);
     // - Dispatch the events.
     event_loop(renderer, grayscale);
