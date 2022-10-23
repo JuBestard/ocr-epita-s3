@@ -1,5 +1,5 @@
-#include "binarization.h"
-#include "grayscale.h"
+#include "processing/binarization.h"
+#include "processing/grayscale.h"
 #include <SDL2/SDL_pixels.h>
 #include <string.h>
 
