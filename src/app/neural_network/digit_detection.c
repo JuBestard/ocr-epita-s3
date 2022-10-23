@@ -1,6 +1,7 @@
 #include "digit_detection.h"
+#include "neuron.h"
 
-void sigmoid(double* input, double* weight, double* treshold, double* output)
+void sigmoid(Neuron* n)
 {
 
 }
