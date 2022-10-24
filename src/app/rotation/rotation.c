@@ -6,8 +6,9 @@
 SDL_Surface* rotation(SDL_Surface* s, double degree)
 {
     SDL_Surface* output = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
-    double angle =(M_PI / 180) * degree;
-    
+    printf("%f\n", degree);
+    double angle = (M_PI / 180) * degree;
+    printf("%f\n", angle);
     int w = s->w;
     int h = s->h;
     SDL_PixelFormat* pixel_format = SDL_AllocFormat(SDL_PIXELFORMAT_RGB888);
