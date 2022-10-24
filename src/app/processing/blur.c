@@ -1,6 +1,5 @@
 #include "pixels_op/pixels_op.h"
 #include "processing/blur.h"
-#include "math.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_surface.h>
@@ -10,7 +9,7 @@ SDL_Surface* blur(SDL_Surface* s)
 {
     SDL_Surface* output = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
 
-    double sigma = 1;
+    /*double sigma = 1;
     int W = 5;
     double kernel[W][W];
     double mean = W/2;
@@ -33,8 +32,16 @@ SDL_Surface* blur(SDL_Surface* s)
         {
             kernel[x][y] /= sum;
         }
-    }
-
+    }*/
+    
+    float kernel[5][5] = 
+    {  
+        {0.0030,    0.0133,    0.0219,    0.0133,    0.0030},
+        {0.0133,    0.0596,    0.0983,    0.0596,    0.0133},
+        {0.0219,    0.0983,    0.1621,    0.0983,    0.0219},
+        {0.0133,    0.0596,    0.0983,    0.0596,    0.0133},
+        {0.0030,    0.0133,    0.0219,    0.0133,    0.0030},
+    };
 
 	float gaussian5[5][5] =
 	{
@@ -44,6 +51,16 @@ SDL_Surface* blur(SDL_Surface* s)
         {4./256., 16./256., 24./256., 16./256., 4./256.},
         {1./256., 4./256., 6./256., 4./256., 1./256.},
 	};
+
+    float sumGauss = 0;
+    for(int i = 0; i < 5; i++)
+    {
+        for(int j = 0; j < 5; j++)
+        {
+            sumGauss += gaussian5[i][j];
+        }
+    }
+
 	float gaussian3[3][3] =
 	{
 		{1./16., 2./16., 1./16.},
@@ -73,7 +90,7 @@ SDL_Surface* blur(SDL_Surface* s)
                     sumb += b * kernel[i][j];
                 }
             }
-            pixel = SDL_MapRGB(s->format, sumr, sumg, sumb);
+            pixel = SDL_MapRGB(s->format, sumr/sumGauss, sumg/sumGauss, sumb/sumGauss);
             putpixel(output, x, y, pixel);
         }
     }
