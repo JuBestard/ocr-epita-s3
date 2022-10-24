@@ -1,7 +1,11 @@
+#include "processing/otsu.h"
+#include "processing/blur.h"
 #include "processing/binarization.h"
 #include "processing/grayscale.h"
 #include "err.h"
 #include "tools.h"
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_surface.h>
 
 void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 {
@@ -57,11 +61,14 @@ int main(int argc, char** argv)
     SDL_PixelFormat* format = surface-> format;
     // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, w, h);
-    binarize(surface);
+    grayscale(surface, format);
+    SDL_Surface* blurs = blur(surface);
+    otsu(blurs);
     // - Create a new texture from the grayscale surface.
-    SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_SaveBMP(surface, "out.bmp");
+    SDL_Texture* grayscale = SDL_CreateTextureFromSurface(renderer, blurs); 
+    IMG_SavePNG(blurs, "out.png");
     SDL_FreeSurface(surface);
+    SDL_FreeSurface(blurs);
     // - Dispatch the events.
     event_loop(renderer, grayscale);
     // - Destroy the objects.

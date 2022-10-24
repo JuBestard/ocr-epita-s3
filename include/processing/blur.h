@@ -4,6 +4,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_surface.h>
 
-void blur(SDL_Surface* surface);
+SDL_Surface* blur(SDL_Surface* surface);
 
 #endif
