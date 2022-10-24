@@ -51,12 +51,10 @@ int main(int argc, char** argv)
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     // - Create a surface from the colored image.
     SDL_Surface* surface = load_image(argv[1]);
-
     // Gets the width and the height of the texture.
     int w = surface->w;
     int h = surface->h;
-    SDL_PixelFormat* format =surface-> format;
-
+    SDL_PixelFormat* format = surface-> format;
     // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, w, h);
     binarize(surface);
