@@ -1,0 +1,46 @@
+
+=================================================================
+==10796==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 6240 byte(s) in 3 object(s) allocated from:
+    #0 0x7f93642e4411 in __interceptor_calloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:77
+    #1 0x7f9360051a74 in amdgpu_winsys_create (/usr/lib/dri/radeonsi_dri.so+0x899a74)
+
+Direct leak of 736 byte(s) in 4 object(s) allocated from:
+    #0 0x7f93642e4411 in __interceptor_calloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:77
+    #1 0x7f9363026cba  (<unknown module>)
+
+Direct leak of 520 byte(s) in 13 object(s) allocated from:
+    #0 0x7f93642e4a89 in __interceptor_malloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x7f9363037cb8  (<unknown module>)
+
+Direct leak of 184 byte(s) in 1 object(s) allocated from:
+    #0 0x7f93642e4411 in __interceptor_calloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:77
+    #1 0x7f9363026cba  (<unknown module>)
+    #2 0x2a00000021  (<unknown module>)
+
+Direct leak of 96 byte(s) in 3 object(s) allocated from:
+    #0 0x7f93642e4a89 in __interceptor_malloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x7f9363034794  (<unknown module>)
+
+Direct leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7f93642e4a89 in __interceptor_malloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x7f936303bedf  (<unknown module>)
+
+Indirect leak of 1933 byte(s) in 9 object(s) allocated from:
+    #0 0x7f93642e37ea in __interceptor_realloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:85
+    #1 0x7f9363034885  (<unknown module>)
+
+Indirect leak of 40 byte(s) in 1 object(s) allocated from:
+    #0 0x7f93642e4a89 in __interceptor_malloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x7f9363035278  (<unknown module>)
+
+Indirect leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7f93642e4a89 in __interceptor_malloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x7f936303bedf  (<unknown module>)
+
+Indirect leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7f93642e4a89 in __interceptor_malloc /usr/src/debug/gcc/libsanitizer/asan/asan_malloc_linux.cpp:69
+    #1 0x7f936302c4ac  (<unknown module>)
+
+SUMMARY: AddressSanitizer: 9821 byte(s) leaked in 37 allocation(s).
