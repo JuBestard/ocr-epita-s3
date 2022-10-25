@@ -1,15 +1,21 @@
 #include "pixels_op/pixels_op.h"
 
+Uint8* pixel_ref(SDL_Surface* surface, unsigned x, unsigned y)
+{
+    int bpp = surface->format->BytesPerPixel;
+    return (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
+}
+
 /*
  * Return the pixel value at (x, y)
  * NOTE: The surface must be locked before calling this!
  */
+
 Uint32 getpixel(SDL_Surface* surface, int x, int y)
 {
-    int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
-
+    Uint8 *p =pixel_ref(surface, x, y);
+    int bpp = surface->format->BytesPerPixel;
     switch(bpp) {
     case 1:
         return *p;
