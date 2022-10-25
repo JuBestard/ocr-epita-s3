@@ -6,14 +6,15 @@
 #include <SDL2/SDL_image.h>
 SDL_Surface* rotation(SDL_Surface* s, double degree)
 {
-    double angle = (M_PI / 180.) * degree;
+    double angle = (M_PI / 180.0) * degree;
     int w = s->w;
     int h = s->h;
     SDL_PixelFormat* pixel_format = s->format;
-    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,w,h,pixel_format->BitsPerPixel, pixel_format->format);
+    int bpp = pixel_format->BitsPerPixel;
+    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,w,h,bpp, pixel_format->format);
 
-    double center_x = w / 2.;
-    double center_y = h / 2.;
+    double center_x = (double) w / (double) 2;
+    double center_y = (double) h / (double) 2;
     
 
     Uint32* pixelsOut = output->pixels;

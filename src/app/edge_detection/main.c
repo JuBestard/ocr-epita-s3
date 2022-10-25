@@ -1,4 +1,4 @@
-#include "rotation/rotation.h"
+#include "edge_detection/sobel_operator.h"
 #include "err.h"
 #include "tools.h"
 #include <SDL2/SDL_image.h>
@@ -38,7 +38,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 int main(int argc, char** argv)
 {
     // Checks the number of arguments.
-    if (argc != 3)
+    if (argc != 2)
         errx(EXIT_FAILURE, "Usage: image-file");
 
     // - Initialize the SDL.
@@ -59,9 +59,7 @@ int main(int argc, char** argv)
     SDL_PixelFormat* format = surface-> format;
     // - Resize the window according to the size of the image
     SDL_SetWindowSize(window, w, h);
-    char* tmp;
-    double angle = strtod(argv[2], &tmp);
-    SDL_Surface* rotate = rotation(surface, angle);
+    SDL_Surface* rotate = sobel_operator(surface);
     // - Create a new texture from the grayscale surface.
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, rotate); 
     IMG_SavePNG(rotate, "out.png");
