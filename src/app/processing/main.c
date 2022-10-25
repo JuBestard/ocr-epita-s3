@@ -1,6 +1,5 @@
 #include "processing/otsu.h"
 #include "processing/blur.h"
-#include "processing/binarization.h"
 #include "processing/grayscale.h"
 #include "err.h"
 #include "tools.h"
