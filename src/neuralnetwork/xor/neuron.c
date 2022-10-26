@@ -20,7 +20,7 @@ double calculateOutput(Neuron* n)
 
 double rand01()
 {
-    return ((double)rand() / (double)RAND_MAX);
+    return ((double)(rand()+1) / (double)(RAND_MAX+1.0));
 }
 
 void randWeights(Neuron* n)
