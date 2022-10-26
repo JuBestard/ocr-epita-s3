@@ -1,15 +1,19 @@
 #include "rotation_scale/rotation.h"
 #include "rotation_scale/scale.h"
-#include "err.h"
+#include "processing/otsu.h"
+#include "processing/grayscale.h"
+#include "processing/blur.h"
 #include "tools.h"
+
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
-#include <stdlib.h>
+
+#include "err.h"
 
 void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 {
    SDL_Event event;
-   //SDL_Texture* t = texture;
    while(1)
    {
        SDL_WaitEvent(&event);
@@ -24,11 +28,6 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
                }
                break;
             case SDL_KEYDOWN:
-                /*(event.key.keysym.sym == SDLK_t)
-                {
-                    t = t == texture ? blackwhite : texture;
-                    draw(renderer, t);
-                }*/
                 if(event.key.keysym.sym == SDLK_ESCAPE)
                     return;
                 break;
@@ -36,10 +35,11 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
    }
 }
 
+
 int main(int argc, char** argv)
 {
     // Checks the number of arguments.
-    if (argc != 3)
+    if (argc != 2)
         errx(EXIT_FAILURE, "Usage: image-file");
 
     // - Initialize the SDL.
@@ -58,27 +58,25 @@ int main(int argc, char** argv)
     int w = surface->w;
     int h = surface->h;
     SDL_PixelFormat* format = surface-> format;
-    // - Resize the window according to the size of the image
+    // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, w, h);
-    char* tmp;
-    double angle = strtod(argv[2], &tmp);
-    SDL_Surface* scaled = scaling(surface);
-    SDL_Surface* rotate = rotation(scaled, angle);
-    // - Create a new texture from the grayscale surface.
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, rotate); 
-    IMG_SavePNG(rotate, "out.png");
+
+    SDL_Surface* surface_scale = scaling(surface);
+    grayscale(surface_scale, format);
+    SDL_Surface* surface_blur = blur(surface_scale);
+    otsu(surface_blur);
+    SDL_Texture* final = SDL_CreateTextureFromSurface(renderer, surface_blur);
+
+    IMG_SavePNG(surface_blur, "out.png");
+    event_loop(renderer, final);
+
+    SDL_DestroyTexture(final);
     SDL_FreeSurface(surface);
-    SDL_FreeSurface(rotate);
-    // - Dispatch the events.
-    event_loop(renderer, texture);
-    // - Destroy the objects.
-    SDL_DestroyTexture(texture);
-    //SDL_DestroyTexture(blackwhite);
+    SDL_FreeSurface(surface_scale);
+    SDL_FreeSurface(surface_blur);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
     return EXIT_SUCCESS;
-
-
 }
