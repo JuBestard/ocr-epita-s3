@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra
 LDFLAGS =
 LDLIBS =
 
-SRC = solver.c
+SRC = solver.c 
 OBJ = ${SRC:.c=.o}
 PRG = ${SRC:.c=}
 

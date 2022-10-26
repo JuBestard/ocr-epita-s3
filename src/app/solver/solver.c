@@ -1,105 +1,68 @@
 #include <stdio.h>
+#include "solver.h"
 
-#define True 1
-#define False 0
-const int N = 9;
-const int n = 3;
 const int EMPTY = 0;
 
-//convert the . into a 0
 
-
-int RowCheck(int board[N][N], int row, int val)
+int  RowCheck(int val, int board[N][N], int row)
+// return 1 if the value is not already on the row
 {
-    //check if a value is in the given row
-    for (int col = 0; col < N; col++)
-    {
+    for (int col=0; col < 9; col++)
         if (board[row][col] == val)
-            return True;
-    }
-    return False;
+            return 0;
+    return 1;
 }
 
-int ColCheck(int board[N][N], int col, int val)
-//check if a value is in the given col
+int ColCheck(int val, int board[N][N], int col)
+// return 1 if the value is not already on the columns
 {
-    for (int row = 0; row < N; row++)
-    {
+    for (int row=0; row < 9; row++)
         if (board[row][col] == val)
-            return True;
-    }
-    return False;
+            return 0;
+    return 1;
 }
 
-int BoxCheck(int board[N][N], int boxStartRow, int boxStartCol, int val)
-//check if a value is in the given box
+int BoxCheck(int val, int board[N][N], int row, int col)
+// return 1 if the value is not already on the box (3x3)
 {
-    for (int row = 0; row < n; row++)
+    int i = row-(row%n), j = col-(col%n);  // ou encore : _i = 3*(i/3), _j = 3*(j/3);
+    for (row = i; row < i+n; row++)
+        for (col = j; col < j+n; col++)
+            if (board[row][col] == val)
+                return 0;
+    return 1;
+}
+
+int Solve(int board[N][N], int position)
+{
+    if (position == N*N)
+        return 1;
+
+    int row = position/9, col = position%9;
+
+    if (board[row][col] != 0)
+        return Solve(board, position+1);
+
+    for (int val=1; val <= 9; val++)
     {
-        for (int col = 0; col < n; col ++)
+        if (RowCheck(val ,board, row)== 1
+                && ColCheck(val,board,col) == 1
+                && BoxCheck(val,board,row,col))
         {
-            if (board[row + boxStartRow][col + boxStartCol] == val)
-                return True;
+            board[row][col] = val;
+
+            if (Solve(board, position+1)== 1)
+                return 1;
         }
     }
-    return False;
+    board[row][col] = 0;
+
+    return 0;
 }
 
-int IsValid(int board[N][N], int row, int col, int val)
-//check if the number is a valid entry in the case
-{
-    if (RowCheck(board, row, val) == False && ColCheck(board, col, val) == False
-            && BoxCheck(board, row - row % n, col - col % n, val) == False 
-            &&  board[row][col] == EMPTY)
-        return True;
-    return False;
-}
-
-int FindEmpty(int board[N][N])
-//find the first cell with no value
-{
-    for (int row = 0; row < N; row++)
-    {
-        for (int col = 0; col < N; row++)
-        {
-            if(board[row][col] == EMPTY)
-                return True;
-        }
-    }
-    return False;
-}
-
-int Solve(int board[N][N])
-//main function to solve the board
-{
-    //init variables
-    for(int row = 0; row < N; row++)
-    {
-        for(int col = 0; col < N; col++)
-        {
-            //check if there is empty cell left or not
-            if (FindEmpty(board) == False)
-                return True;
-
-            //check each value from 1 to 9 and if it's a correct move
-            for (int val = 1; val <= N; val ++)
-            {
-                if(IsValid(board, row, col, val))
-                {
-                    board[row][col] = val;
-
-                    if(Solve(board))
-                        return True;
-
-                    board[row][col] = val;
-                }
-            }
-        }
-    }
-    return False;
-}
 
 //####temporary main#####
+
 
 void printGrid(int board[N][N])
 {
@@ -115,17 +78,26 @@ void printGrid(int board[N][N])
 
 int main()
 {
-    int grid[9][9] = { { 3, 0, 6, 5, 0, 8, 4, 0, 0 },
-                       { 5, 2, 0, 0, 0, 0, 0, 0, 0 },
-                       { 0, 8, 7, 0, 0, 0, 0, 3, 1 },
-                       { 0, 0, 3, 0, 1, 0, 0, 8, 0 },
-                       { 9, 0, 0, 8, 6, 3, 0, 0, 5 },
-                       { 0, 5, 0, 0, 9, 0, 6, 0, 0 },
-                       { 1, 3, 0, 0, 0, 0, 2, 5, 0 },
-                       { 0, 0, 0, 0, 0, 0, 0, 7, 4 },
-                       { 0, 0, 5, 2, 0, 6, 3, 0, 0 } };
+    int grid[9][9] = { { 0, 0, 0, 0, 0, 4, 5, 8, 0 },
+                       { 0, 0, 0, 7, 2, 1, 0, 0, 3 },
+                       { 4, 0, 3, 0, 0, 0, 0, 0, 0 },
+                       { 2, 1, 0, 0, 6, 7, 0, 0, 4 },
+                       { 0, 7, 0, 0, 0, 0, 2, 0, 0 },
+                       { 6, 3, 0, 0, 4, 9, 0, 0, 1 },
+                       { 3, 0, 6, 0, 0, 0, 0, 0, 0 },
+                       { 0, 0, 0, 1, 5, 8, 0, 0, 6 },
+                       { 0, 0, 0, 0, 0, 6, 9, 5, 0 } };
 
-    Solve(grid);
+
+    printf("Current grid: \n");
+    printGrid(grid);
+
+    printf("Est ce que la grille est solve ? %i \n", Solve(grid,0));
+
+    printf("Solved grid: \n");
+    Solve(grid,0);
     printGrid(grid);
     return 0;
+
 }
+
