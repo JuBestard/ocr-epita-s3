@@ -2,4 +2,4 @@
 
 ## Requirements
 
-Use the SDL2 library [SDL](https://www.libsdl.org/) to compile this OCR.
+Use the SDL library [SDL](https://www.libsdl.org/) to compile this OCR.
