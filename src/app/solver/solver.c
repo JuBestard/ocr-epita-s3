@@ -1,5 +1,5 @@
-#include "solver.h"
-#include "load_save.h"
+#include "solver/solver.h"
+#include "solver/load_save.h"
 #include "err.h"
 #include <stdio.h>
 
