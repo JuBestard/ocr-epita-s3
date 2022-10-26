@@ -1,5 +1,5 @@
-#include "rotation_scale/scale.h"
-#include "toolbox/pixels_op.h"
+#include "image_process/rotation_scale/scale.h"
+#include "image_process/toolbox/pixels_op.h"
 #include <SDL2/SDL_surface.h>
 #include "math.h"
 

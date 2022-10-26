@@ -1,4 +1,4 @@
-#include "neuron.h"
+#include "neuralnet/neuron.h"
 #include <stdio.h>
 #include <stdlib.h>
 

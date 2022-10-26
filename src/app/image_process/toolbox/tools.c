@@ -1,4 +1,4 @@
-#include "../tools.h"
+#include "tools.h"
 
 SDL_Surface* load_image(const char* file)
 {

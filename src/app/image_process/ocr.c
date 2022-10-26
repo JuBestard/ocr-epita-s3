@@ -1,9 +1,9 @@
-#include "rotation_scale/rotation.h"
-#include "rotation_scale/scale.h"
-#include "color_treatement/otsu.h"
-#include "color_treatement/grayscale.h"
-#include "color_treatement/blur.h"
-#include "../tools.h"
+#include "image_process/rotation_scale/rotation.h"
+#include "image_process/rotation_scale/scale.h"
+#include "image_process/color_treatement/otsu.h"
+#include "image_process/color_treatement/grayscale.h"
+#include "image_process/color_treatement/blur.h"
+#include "tools.h"
 
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
