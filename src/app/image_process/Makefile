@@ -22,5 +22,5 @@ ocr: ${OBJ}
 clean:
 	${RM} ${OBJ}
 	${RM} ${DEP}
-	${RM} main 
+	${RM} $(PRG) 
 	${RM} *.bmp
