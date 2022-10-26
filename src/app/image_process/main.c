@@ -8,9 +8,11 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "err.h"
-
+#include "math.h"
 void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 {
    SDL_Event event;
@@ -35,48 +37,59 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
    }
 }
 
+int usage()
+{
+    printf("%s\n", "Name : OCR");
+    printf("%s\n", "Description : Sudoku Solver");
+    printf("%s\n", "Usage : [mode] [image] [options]");
+    printf("%s\n", "        [mode] : color -> color processing");
+    printf("%s\n", "                 rotate -> manual rotation of an image (the degree of the rotation is given in option)");
+    printf("%s\n", "        [options] : ONLY FOR THE ROTATION : the degree of the rotation");
+    return EXIT_FAILURE;
+}
+
+int rotate(char* path, double degree)
+{
+    SDL_Surface* surface = load_image(path);
+
+    SDL_Surface* surface_rotated = rotation(surface, degree);
+
+    SDL_SaveBMP(surface_rotated, "out.bmp");
+    SDL_FreeSurface(surface_rotated);
+    return EXIT_SUCCESS;
+}
+
+int color_treatement(char* path)
+{
+    SDL_Surface* surface = load_image(path);
+
+    grayscale(surface);
+    SDL_Surface* surface_blur = blur(surface);
+    otsu(surface_blur);
+
+    SDL_SaveBMP(surface_blur, "out.bmp");
+    
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(surface_blur);
+
+    return EXIT_SUCCESS;
+}
 
 int main(int argc, char** argv)
 {
     // Checks the number of arguments
-    if (argc != 2)
-        errx(EXIT_FAILURE, "Usage: image-file");
-
-    // - Initialize the SDL.
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-        errx(EXIT_FAILURE,"%s", SDL_GetError());
-    // - Create a window.
-    SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 640, 400,
-            SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (window == NULL)
-        errx(EXIT_FAILURE, "%s", SDL_GetError());
-    // - Create a renderer.
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    // - Create a surface from the colored image.
-    SDL_Surface* surface = load_image(argv[1]);
-    // Gets the width and the height of the texture.
-    int w = surface->w;
-    int h = surface->h;
-    SDL_PixelFormat* format = surface-> format;
-    // - Resize the window according to the size of the image.
-    SDL_SetWindowSize(window, w, h);
-
-    SDL_Surface* surface_scale = scaling(surface);
-    grayscale(surface_scale, format);
-    SDL_Surface* surface_blur = blur(surface_scale);
-    otsu(surface_blur);
-    //SDL_Texture* final = SDL_CreateTextureFromSurface(renderer, surface_blur);
-
-    SDL_SaveBMP(surface_blur, "out.bmp");
-    //event_loop(renderer, final);
-
-    //SDL_DestroyTexture(final);
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(surface_scale);
-    SDL_FreeSurface(surface_blur);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-    return EXIT_SUCCESS;
+    char* color = "color";
+    char* srotate = "rotate";
+    if(argc <= 2)
+        return usage();
+    if(argc == 3 && strcmp(argv[1], color) != 0)
+        return usage();
+    if (argc == 3)
+        return color_treatement(argv[2]);
+    if(argc == 4 && strcmp(argv[1], srotate) != 0)
+        return usage();
+    if(argc == 4)
+        return rotate(argv[2], atof(argv[3]));
+    else
+        return usage();
 }
