@@ -65,12 +65,12 @@ int main(int argc, char** argv)
     grayscale(surface_scale, format);
     SDL_Surface* surface_blur = blur(surface_scale);
     otsu(surface_blur);
-    SDL_Texture* final = SDL_CreateTextureFromSurface(renderer, surface_blur);
+    //SDL_Texture* final = SDL_CreateTextureFromSurface(renderer, surface_blur);
 
     IMG_SavePNG(surface_blur, "out.png");
-    event_loop(renderer, final);
+    //event_loop(renderer, final);
 
-    SDL_DestroyTexture(final);
+    //SDL_DestroyTexture(final);
     SDL_FreeSurface(surface);
     SDL_FreeSurface(surface_scale);
     SDL_FreeSurface(surface_blur);
