@@ -38,4 +38,4 @@ clean:
 	${RM} ${OBJAPP} ${OBJNET}
 	${RM} ${DEPAPP} ${DEPNET}
 	${RM} ${PRGAPP} ${PRGNET}
-	${RM} *.bmp
+	${RM} *.bmp *.result
