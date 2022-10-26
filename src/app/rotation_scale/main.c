@@ -1,4 +1,5 @@
-#include "rotation/rotation.h"
+#include "rotation_scale/rotation.h"
+#include "rotation_scale/scale.h"
 #include "err.h"
 #include "tools.h"
 #include <SDL2/SDL_image.h>
@@ -61,7 +62,8 @@ int main(int argc, char** argv)
     SDL_SetWindowSize(window, w, h);
     char* tmp;
     double angle = strtod(argv[2], &tmp);
-    SDL_Surface* rotate = rotation(surface, angle);
+    SDL_Surface* scaled = scaling(surface);
+    SDL_Surface* rotate = rotation(scaled, angle);
     // - Create a new texture from the grayscale surface.
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, rotate); 
     IMG_SavePNG(rotate, "out.png");

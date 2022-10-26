@@ -19,39 +19,38 @@ void init_hist(SDL_Surface* s, int width, int height, float* hist, int nbpixels)
         hist[i] /= nbpixels;
 }
 
-Uint8 otsu_threshold(float *hist)
+Uint8 otsu_threshold(float* hist)
 {
-    float w0 = 0, w1 = 0, wT = 0;
-    float u0 = 0, u1 = 0, uT = 0;
-    float sum = 0, vk = 0, v_max = 0;
+    //B stands for Background and F for foreground
+    float sumB = 0, sum = 0;
+    float total = 0;
+    float wB = 0, wF = 0;
+    float mB = 0, mF = 0;
+    float varMax = 0;
     float threshold = 0;
-
-    for (size_t i = 0; i < 256; i++)
+    
+    for(int i = 0; i < 256; i++)
     {
-        uT += i * hist[i];
-        wT += hist[i];
-    }
-
-    for (size_t i = 0; i < 256; i++)
-    {
-        w0 += hist[i];
-        w1 = wT - w0;
-
         sum += i * hist[i];
-        u0 = sum / w0;
-        u1 = (uT - sum) / w1;
+        total += hist[i];
+    }
+    
+    for(int i = 0; i < 256; i++)
+    {
+        wB += hist[i];
+        wF = total - wB;
+        
+        sumB += i * hist[i];
+        mB = sumB / wB;
+        mF = (sum - sumB) / wF;
+        double varmid = wB * wF * (mB - mF) * (mB- mF);
 
-        // Maximizing inter-class variance
-        vk = w0 * w1 * (u0 - u1) * (u0 - u1);
-
-        // Find max vk = Find threshold
-        if (vk > v_max)
+        if(varmid > varMax)
         {
             threshold = i;
-            v_max = vk;
+            varMax = varmid;
         }
     }
-
     return (Uint8)threshold;
 }
 
