@@ -1,8 +1,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "xor.h"
-#include "neuron.h"
+#include "neuralnet/xor.h"
+#include "neuralnet/neuron.h"
 
 double train_inputs[4][2] = {{0, 0}, {1, 0}, {0, 1}, {1, 1}};
 int train_outputs[4] = {0, 1, 1, 0};
