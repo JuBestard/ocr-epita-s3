@@ -64,7 +64,6 @@ SDL_Surface* blur(SDL_Surface* s)
         }
     }
     free(kernel);
-    IMG_SavePNG(output, "blur.png");
     return output;
 }
 
