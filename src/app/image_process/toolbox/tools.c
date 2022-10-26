@@ -8,24 +8,6 @@ SDL_Surface* load_image(const char* file)
     return off;
 }
 
-Uint32 grayscale(Uint32 pixel_color, SDL_PixelFormat* format)
-{
-    Uint8 r, g, b;
-    SDL_GetRGB(pixel_color, format, &r, &g, &b);
-    //Uint8 gray = 0.3*r + 0.59*g + 0.11*b;
-    Uint8 gray = (r+b+g)/3;
-    return SDL_MapRGB(format, gray, gray, gray);
-}
-
-void apply_grayscale(SDL_Surface* surface, SDL_PixelFormat* format)
-{
-    Uint32* pixels = surface->pixels;
-    int len = surface->w * surface->h;
-    SDL_LockSurface(surface);
-    for(int i = 0; i < len; i++)
-        pixels[i] = grayscale(pixels[i], format);
-    SDL_UnlockSurface(surface);
-}
 void invert(SDL_Surface* surface, SDL_PixelFormat* format, int status)
 {
     if(status)
