@@ -3,103 +3,60 @@
 #include "err.h"
 #include <stdio.h>
 
-int IsBoardValid(int board[9][9])
+int  RowCheck(int val, int board[N][N], int row)
+// return 1 if the value is not already on the row
 {
-    for(int i = 1; i <= 9; i++)
-    {
-        for(int j = 0; j < 9; j++)
-        {
-            int col = 0;
-            int lig = 0;
-            for(int k = 0; k < 9; k++)
-            {
-                if(board[j][k] == i)
-                    lig += 1;
-                if(board[k][j] == i)
-                    col += 1;
-                if(col > 1 || lig > 1)
-                    return 0;
-            }
-        }
-
-        for(int x = 0; x < 3; x++)
-        {
-            for(int y = 0; y < 3; y++)
-            {
-                int grid = 0;
-                for(int j = 0; j < 3; j++)
-                {
-                    for(int k = 0; k < 3; k++)
-                    {
-                        if(board[3 * x + j][3 * y + k] == i)
-                            grid += 1;
-                    }
-                }
-                if(grid > 1)
-                    return 0;
-            }
-        }
-    }
-
+    for (int col=0; col < 9; col++)
+        if (board[row][col] == val)
+            return 0;
     return 1;
 }
 
-int IsSolved(int board[9][9])
+int ColCheck(int val, int board[N][N], int col)
+// return 1 if the value is not already on the columns
 {
-    for(int i = 0; i < 9; i++)
-    {
-        for(int j = 0; j < 9; j++)
-        {
-            if(board[i][j] == 0)
+    for (int row=0; row < 9; row++)
+        if (board[row][col] == val)
+            return 0;
+    return 1;
+}
+
+int BoxCheck(int val, int board[N][N], int row, int col)
+// return 1 if the value is not already on the box (3x3)
+{
+    int i = row-(row%n), j = col-(col%n);  // ou encore : _i = 3*(i/3), _j = 3*(j/3);
+    for (row = i; row < i+n; row++)
+        for (col = j; col < j+n; col++)
+            if (board[row][col] == val)
                 return 0;
-        }
-    }
     return 1;
 }
 
-Tuple FindEmpty(int board[9][9])
+int Solve(int board[N][N], int position)
 {
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            if (board[i][j] == 0)
-            {
-                Tuple tuple = {i,j};
-                return tuple;
-            }
-        }
-    }
-
-    errx(1,"No more empty cell");
-}
-
-int Solve(int board[9][9])
-{
-    if(IsSolved(board) == 1)
+    if (position == N*N)
         return 1;
-    Tuple empty = FindEmpty(board);
-    for(int k = 1; k <= 9; k++)
-    {
-        board[empty.x][empty.y] = k;
-        if(IsBoardValid(board) == 1 && Solve(board) == 1)
-            return 1;
-    }
-    board[empty.x][empty.y] = 0;
-    return 0;
-}
 
+    int row = position/9, col = position%9;
 
-void printGrid(int board[9][9])
-{
-    for (int row = 0; row < 9; row ++)
+    if (board[row][col] != 0)
+        return Solve(board, position+1);
+
+    for (int val=1; val <= 9; val++)
     {
-        for (int col = 0; col <9 ; col ++)
+        if (RowCheck(val ,board, row)== 1
+                && ColCheck(val,board,col) == 1
+                && BoxCheck(val,board,row,col))
         {
-            printf("%2d", board[row][col]);
+            board[row][col] = val;
+
+            if (Solve(board, position+1)== 1)
+                return 1;
         }
-        printf("\n");
     }
+    board[row][col] = 0;
+
+    return 0;
 }
 
 int main()
