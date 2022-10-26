@@ -1,5 +1,5 @@
-#include "pixels_op/pixels_op.h"
-#include "processing/blur.h"
+#include "toolbox/pixels_op.h"
+#include "color_treatement/blur.h"
 #include "math.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_pixels.h>

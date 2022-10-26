@@ -1,4 +1,4 @@
-CC = gcc -I../../../include/
+CC = gcc -I../../../include/image_process
 CFLAGS = -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_image`
 
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
@@ -13,7 +13,7 @@ main: ${OBJ}
 .PHONY: clean
 
 clean:
-	${RM} ${OBJ} 
-	${RM} main 
-	${RM} *.bmp *.png
+	${RM} ${OBJ}
 	${RM} ${DEP}
+	${RM} main 
+	${RM} *.bmp

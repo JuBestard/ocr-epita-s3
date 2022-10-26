@@ -1,4 +1,4 @@
-#include "processing/grayscale.h"
+#include "color_treatement/grayscale.h"
 
 Uint32 _grayscale(Uint32 pc, SDL_PixelFormat* f)
 {

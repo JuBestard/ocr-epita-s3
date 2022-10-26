@@ -1,4 +1,4 @@
-#include "pixels_op/pixels_op.h"
+#include "toolbox/pixels_op.h"
 
 Uint8* pixel_ref(SDL_Surface* surface, unsigned x, unsigned y)
 {

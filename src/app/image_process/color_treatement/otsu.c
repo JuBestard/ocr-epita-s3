@@ -1,5 +1,5 @@
-#include "processing/otsu.h"
-#include "pixels_op/pixels_op.h"
+#include "color_treatement/otsu.h"
+#include "toolbox/pixels_op.h"
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_pixels.h>
 

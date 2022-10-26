@@ -1,9 +1,9 @@
 #include "rotation_scale/rotation.h"
 #include "rotation_scale/scale.h"
-#include "processing/otsu.h"
-#include "processing/grayscale.h"
-#include "processing/blur.h"
-#include "tools.h"
+#include "color_treatement/otsu.h"
+#include "color_treatement/grayscale.h"
+#include "color_treatement/blur.h"
+#include "../tools.h"
 
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
@@ -38,7 +38,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 
 int main(int argc, char** argv)
 {
-    // Checks the number of arguments.
+    // Checks the number of arguments
     if (argc != 2)
         errx(EXIT_FAILURE, "Usage: image-file");
 
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
     otsu(surface_blur);
     //SDL_Texture* final = SDL_CreateTextureFromSurface(renderer, surface_blur);
 
-    IMG_SavePNG(surface_blur, "out.png");
+    SDL_SaveBMP(surface_blur, "out.bmp");
     //event_loop(renderer, final);
 
     //SDL_DestroyTexture(final);
