@@ -8,7 +8,8 @@ LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
 SRC = $(wildcard color_treatement/*.c) $(wildcard rotation_scale/*.c) $(wildcard toolbox/*.c)
 OBJ = ${SRC:.c=.o}
 DEP = ${SRC:.c=.d}
-main: ${OBJ}
+
+ocr: ${OBJ}
 
 .PHONY: clean
 

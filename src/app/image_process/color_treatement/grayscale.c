@@ -8,8 +8,9 @@ Uint32 _grayscale(Uint32 pc, SDL_PixelFormat* f)
     return SDL_MapRGB(f, gray, gray, gray);
 }
 
-void grayscale(SDL_Surface* s, SDL_PixelFormat* f)
+void grayscale(SDL_Surface* s)
 {
+    SDL_PixelFormat* f = s->format;
     Uint32* pixels = s->pixels;
     int len = s->w*s->h;
     SDL_LockSurface(s);
