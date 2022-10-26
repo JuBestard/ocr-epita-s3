@@ -35,7 +35,7 @@ ${PRGSOL}: ${OBJSOL}
 .PHONY: clean
 
 clean:
-	${RM} ${OBJAPP} ${OBJNET}
-	${RM} ${DEPAPP} ${DEPNET}
-	${RM} ${PRGAPP} ${PRGNET}
+	${RM} ${OBJAPP} ${OBJNET} ${OBJSOL}
+	${RM} ${DEPAPP} ${DEPNET} ${DEPSOL}
+	${RM} ${PRGAPP} ${PRGNET} ${PRGSOL}
 	${RM} *.bmp *.result
