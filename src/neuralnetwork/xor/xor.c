@@ -45,7 +45,7 @@ void train(int epoch)
 
             printf("\rEPOCH : %i -> %f xor %f = %f", j+1, train_inputs[i][0], train_inputs[i][1],
                     result);
-            sleep(0.01);
+            sleep(0.1);
             fflush(stdout);
         }
         printf("\n");
