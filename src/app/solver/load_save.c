@@ -33,7 +33,7 @@ void load_grid(char* path, int grid[9][9])
     }
     else
     {
-        errx(1, "Connot open file");
+        errx(1, "load : Connot open file");
     }
 }
 
@@ -60,6 +60,6 @@ void save_grid(int grid[9][9], char* path)
     }
     else
     {
-        errx(1, "Cannot open file");
+        errx(1, "save : Cannot open file");
     }
 }

@@ -1,5 +1,5 @@
 CC = gcc -Iinclude/
-CFLAGS = -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_image`
+CFLAGS = -Wall -Wextra -O3 -D__NO_INLINE__ `pkg-config --cflags sdl2 SDL2_image`
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
 
 

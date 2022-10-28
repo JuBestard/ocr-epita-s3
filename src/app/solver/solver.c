@@ -65,10 +65,9 @@ int main(int argc, char** argv)
 {
     if(argc != 2)
         errx(1, "usage : ./solver <path-to-grid>");
-    char* result = strcat(argv[1], ".result");
     int grid[9][9];
     load_grid(argv[1], grid);
     Solve(grid, 0);
-    save_grid(grid, result);
+    save_grid(grid, strcat(argv[1], ".result"));
     return 0;
 }
