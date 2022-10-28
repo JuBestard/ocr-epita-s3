@@ -24,12 +24,12 @@ SDL_Surface* rotation(SDL_Surface* s, double degree)
 
     Uint32 black = SDL_MapRGB(pixel_format, 0, 0, 0);   
 
-    for(int x = 0; x < w; x++)
+    for(int y = 0; y < h; y++)
     {
-        for(int y = 0; y < h; y++)
+        for(int x = 0; x < w; x++)
         {
-            double xp = (x - center_x) * cosinus - (y - center_y) * sinus + center_x;
-            double yp = (x - center_x) * sinus + (y - center_y) * cosinus + center_y;
+            double xp = (x - center_x) * cosinus + (y - center_y) * sinus + center_x;
+            double yp = (y - center_y) * cosinus - (x - center_x) * sinus + center_y;
 
             if(0 <= xp && xp < w && 0 <= yp && yp < h)
             {

@@ -7,9 +7,9 @@
 
 SDL_Surface* sobel_operator(SDL_Surface* surface)
 {
-    int weight = surface->w;
+    int width = surface->w;
     int height = surface->h;
-    Uint8 intensity[weight][height];
+    Uint8 intensity[width][height];
 
     SDL_PixelFormat* pformat = surface->format;
     int bpp = pformat->BitsPerPixel;
@@ -18,11 +18,11 @@ SDL_Surface* sobel_operator(SDL_Surface* surface)
     Uint32* pixels = surface->pixels;
     Uint32 pixel;
 
-    for(int x = 0; x < weight; x++)
+    for(int y = 0; y < height; y++)
     {
-        for(int y = 0; y < height; y++)
+        for(int x = 0; x < width; x++)
         {
-            pixel = pixels[x + y * weight];
+            pixel = pixels[x + y * width];
             SDL_GetRGB(pixel, surface->format, &r, &g, &b);
             intensity[x][y] = r;
         }
@@ -42,11 +42,11 @@ SDL_Surface* sobel_operator(SDL_Surface* surface)
         {1, 2, 1}
     };
 
-    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,weight, height, bpp, pformat->format);
+    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,width, height, bpp, pformat->format);
     Uint32* pixelsOut = output->pixels;
-    for(int x = 1; x < weight-1; x++)
+    for(int y = 1; y < height-1; y++)
     {
-        for(int y = 1; y < height-1; y++)
+        for(int x = 1; x < width-1; x++)
         {
             double magx = 0., magy = 0.;
             for(int i = 0; i < 3; i++)
@@ -61,7 +61,7 @@ SDL_Surface* sobel_operator(SDL_Surface* surface)
             }
 
             double color = sqrt(magx*magx + magy*magy);
-            pixelsOut[x + y * weight] = SDL_MapRGB(output->format, color, color, color);
+            pixelsOut[x + y * width] = SDL_MapRGB(output->format, color, color, color);
         }
     }
     IMG_SavePNG(output, "out.png");

@@ -6,9 +6,9 @@
 void init_hist(SDL_Surface* s, int width, int height, float* hist, int nbpixels)
 {
     Uint8 r, g, b;
-    for (int i = 0; i < width; i++)
+    for (int j = 0; j < height; j++)
     {
-        for (int j = 0; j < height; j++)
+        for (int i = 0; i < width; i++)
         {
             Uint32 pixel = getpixel(s, i, j);
             SDL_GetRGB(pixel, s->format, &r, &g, &b);
@@ -54,31 +54,31 @@ Uint8 otsu_threshold(float* hist)
     return (Uint8)threshold;
 }
 
-void otsu(SDL_Surface *image_surface)
+void otsu(SDL_Surface* surface)
 {
-    size_t width = image_surface->w;
-    size_t height = image_surface->h;
+    int width = surface->w;
+    int height = surface->h;
 
     float hist[256] = {0};
-    init_hist(image_surface, width, height, hist, width*height);
+    init_hist(surface, width, height, hist, width*height);
 
     Uint8 threshold = otsu_threshold(hist);
     Uint8 r, g, b;
 
-    for (size_t i = 0; i < width; i++)
+    for (int y = 0; y < height; y++)
     {
-        for (size_t j = 0; j < height; j++)
+        for (int x = 0; x < width; x++)
         {
-            Uint32 pixel = getpixel(image_surface, i, j);
-            SDL_GetRGB(pixel, image_surface->format, &r, &g, &b);
+            Uint32 pixel = getpixel(surface, x, y);
+            SDL_GetRGB(pixel, surface->format, &r, &g, &b);
 
             if (r > threshold)
                 r = 255;
             else
                 r = 0;
 
-            pixel = SDL_MapRGB(image_surface->format, r, r, r);
-            putpixel(image_surface, i, j, pixel);
+            pixel = SDL_MapRGB(surface->format, r, r, r);
+            putpixel(surface, x, y, pixel);
         }
     }
 }

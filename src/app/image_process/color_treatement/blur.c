@@ -43,9 +43,9 @@ SDL_Surface* blur(SDL_Surface* s)
     int offset = size/2;
     Uint32 pixel;
     Uint8 r, g, b;
-    for(int x = offset; x < w - offset; x++)
+    for(int y = offset; y < h - offset; y++)
     {
-        for(int y = offset; y < h - offset; y++)
+        for(int x = offset; x < w - offset; x++)
         {
             sumr = 0, sumg = 0, sumb = 0;
             for(int i = 0; i < size; i++)

@@ -17,9 +17,9 @@ SDL_Surface* scaling(SDL_Surface* s)
     int x_scale = w/output->w;
     int y_scale = h/output->h;
 
-    for(int x = 0; x < output->w; x++)
+    for(int y = 0; y < output->h; y++)
     {
-        for(int y = 0; y < output->h; y++)
+        for(int x = 0; x < output->w; x++)
         {
             int xp = floor(x * x_scale);
             int yp = floor(y * y_scale);
