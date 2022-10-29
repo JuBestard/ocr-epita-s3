@@ -1,5 +1,5 @@
-#include "edge_detection/sobel_operator.h"
-#include "pixels_op/pixels_op.h"
+#include "detection_grid/edge_detection/sobel_operator.h"
+#include "image_process/toolbox/pixels_op.h"
 #include "math.h"
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_surface.h>
@@ -64,6 +64,5 @@ SDL_Surface* sobel_operator(SDL_Surface* surface)
             pixelsOut[x + y * weight] = SDL_MapRGB(output->format, color, color, color);
         }
     }
-    IMG_SavePNG(output, "out.png");
     return output;
 }

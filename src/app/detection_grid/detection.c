@@ -1,8 +1,4 @@
-#include "image_process/rotation_scale/rotation.h"
-#include "image_process/rotation_scale/scale.h"
-#include "image_process/color_treatement/otsu.h"
-#include "image_process/color_treatement/grayscale.h"
-#include "image_process/color_treatement/blur.h"
+#include "detection_grid/edge_detection/sobel.h"
 #include "tools.h"
 
 #include <SDL2/SDL_image.h>
