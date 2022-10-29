@@ -28,8 +28,8 @@ SDL_Surface* rotation(SDL_Surface* s, double degree)
     {
         for(int y = 0; y < h; y++)
         {
-            double xp = (x - center_x) * cosinus + (y - center_y) * sinus + center_x;
-            double yp = (y - center_y) * cosinus - (x - center_x) * sinus + center_y;
+            double xp = (x - center_x) * cosinus - (y - center_y) * sinus + center_x;
+            double yp = (x - center_x) * sinus + (y - center_y) * cosinus + center_y;
 
             if(0 <= xp && xp < w && 0 <= yp && yp < h)
             {
