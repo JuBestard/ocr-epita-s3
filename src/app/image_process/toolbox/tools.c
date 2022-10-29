@@ -1,5 +1,5 @@
 #include "tools.h"
-
+#include "image_process/toolbox/pixels_op.h"
 SDL_Surface* load_image(const char* file)
 {
     SDL_Surface* tmp = IMG_Load(file);
@@ -8,63 +8,33 @@ SDL_Surface* load_image(const char* file)
     return off;
 }
 
-void invert(SDL_Surface* surface, SDL_PixelFormat* format, int status)
+int Truncate(int value)
 {
-    if(status)
-    {
-        Uint32* pixels = surface->pixels;
-        int len = surface->w * surface->h;
-        SDL_LockSurface(surface);
-        Uint8 r, g, b;
-        for(int i = 0; i < len; i++)
-        {
-
-            SDL_GetRGB(pixels[i], format, &r, &g, &b);
-            pixels[i] = SDL_MapRGB(format, 255 - r, 255 - g, 255 - b);
-        }
-        SDL_UnlockSurface(surface);
-    }
-    else
-    {
-        Uint32* pixels = surface->pixels;
-        Uint32 pixel_ref = SDL_MapRGB(format, 100, 100, 100);
-        int len = surface->w * surface->h;
-        SDL_LockSurface(surface);
-        for(int i = 0; i < len; i++)
-        {
-            if (pixels[i] < pixel_ref)
-                pixels[i] = SDL_MapRGB(format, 255, 255, 255);
-            else
-                pixels[i] = SDL_MapRGB(format, 0, 0, 0);
-        }
-        SDL_UnlockSurface(surface);
-    }
-
+    if(value < 0)
+        return 0;
+    if(value > 255)
+        return 255;
+    return value;
 }
 
-Uint8 contrast_fun(Uint8 c)
+int average_pixel(SDL_Surface* s)
 {
-    if(c <= 255 / 2)
-        return (Uint8)( (255/2) * SDL_pow((double) 2 * c / 255, 5));
-    else
-        return 255 - contrast_fun(255 - c);
-}
-
-void contrast(SDL_Surface* surface, SDL_PixelFormat* format)
-{
-    Uint32* pixels = surface->pixels;
-    Uint8 r,g ,b;
-    int len = surface->w * surface->h;
-    SDL_LockSurface(surface);
-    for(int i = 0; i < len; i++)
+    Uint32 pixel;
+    Uint8 r, g, b;
+    int sr = 0, sg = 0, sb = 0;
+    for(int y = 0; y < s->h; y++)
     {
-        SDL_GetRGB(pixels[i], format, &r, &g, &b);
-        r = contrast_fun(r);
-        g = contrast_fun(g);
-        b = contrast_fun(b);
-        pixels[i] = SDL_MapRGB(format, r, g, b);
+        for(int x = 0; x < s->w; x++)
+        {
+            pixel = getpixel(s, x, y);
+            SDL_GetRGB(pixel, s->format, &r, &g, &b);
+            sr += r;
+            sg += g;
+            sb += b;
+        }
     }
-    SDL_UnlockSurface(surface);
+    int nbpixels = s->w * s->h;
+    return ((sr / nbpixels) + (sg / nbpixels) + (sb / nbpixels)) / 3;
 }
 
 void draw(SDL_Renderer* renderer, SDL_Texture* texture)
