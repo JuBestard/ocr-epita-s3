@@ -9,7 +9,7 @@ DEPNET = ${SRCNET:.c=.d}
 PRGNET = neuralnet
 
 
-SRCAPP = $(wildcard src/app/image_process/color_treatement/*.c) $(wildcard src/app/image_process/rotation_scale/*.c) $(wildcard src/app/image_process/toolbox/*.c) src/app/image_process/ocr.c
+SRCAPP = $(wildcard src/app/image_process/*/*.c) $(wildcard src/app/detection_grid/*/*.c) src/app/ocr.c
 OBJAPP = ${SRCAPP:.c=.o}
 DEPAPP = ${SRCAPP:.c=.d}
 PRGAPP = ocr
