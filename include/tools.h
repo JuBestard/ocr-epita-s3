@@ -9,14 +9,7 @@
 
 SDL_Surface* load_image(const char* file);
 
-//Uint32 grayscale(Uint32 pixel_color, SDL_PixelFormat* format);
-
-//void apply_grayscale(SDL_Surface* surface, SDL_PixelFormat* format);
-
-//void contrast(SDL_Surface* surface, SDL_PixelFormat* format);
-
-//void invert(SDL_Surface* surface, SDL_PixelFormat* format, int status);
-
 void draw(SDL_Renderer* renderer, SDL_Texture* texture);
-
+int average_pixel(SDL_Surface* s);
+int Truncate(int value);
 #endif

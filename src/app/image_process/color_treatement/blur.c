@@ -8,7 +8,8 @@
 
 void gauss_kernel(int size, double* kernel)
 {
-    double sigma = (size - 1) / 6.;
+    //double sigma = (size - 1) / 6.;
+    double sigma = 6.;
     double sum = 0.0;
     for(int x = 0; x < size; x++)
     {
@@ -35,7 +36,7 @@ SDL_Surface* blur(SDL_Surface* s)
     int w = s->w;
     int h = s->h;
 
-    int size = w/100;
+    int size = 10;
 
     double* kernel = malloc(sizeof(double) * size * size);
     gauss_kernel(size, kernel);

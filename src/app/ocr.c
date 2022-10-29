@@ -4,6 +4,7 @@
 #include "image_process/color_treatement/otsu.h"
 #include "image_process/color_treatement/grayscale.h"
 #include "image_process/color_treatement/blur.h"
+#include "image_process/color_treatement/correction.h"
 #include "tools.h"
 
 #include <SDL2/SDL_image.h>
@@ -64,14 +65,35 @@ int color_treatement(char* path)
 {
     SDL_Surface* surface = load_image(path);
 
-    grayscale(surface);
-    SDL_Surface* surface_blur = blur(surface);
-    otsu(surface_blur);
+    if(surface->w > 1500)
+        surface = scaling(surface);
 
-    SDL_SaveBMP(surface_blur, "out.bmp");
+
+    printf("grayscale...\n");
+    grayscale(surface);
+    printf("blur...\n");
+    SDL_Surface* sblur = blur(surface);
+    printf("gamma...\n");
+    SDL_Surface* sgamma = c_gamma(sblur);
     
+    //printf("contrast...\n");
+    //SDL_Surface* scontrast = c_contrast(sgamma);
+    printf("otsu...\n");
+    otsu(sgamma);
+
+    SDL_SaveBMP(sgamma, "out.bmp");
+    
+    /*SDL_Surface* sgamma = c_gamma(surface);
+    SDL_Surface* scontrast = c_contrast(sgamma);
+    grayscale(scontrast);
+    SDL_Surface* sblur = blur(scontrast);
+    otsu(sblur);
+    SDL_SaveBMP(sblur, "out.bmp");*/
+
     SDL_FreeSurface(surface);
-    SDL_FreeSurface(surface_blur);
+    SDL_FreeSurface(sgamma);
+    //SDL_FreeSurface(scontrast);
+    SDL_FreeSurface(sblur);
 
     return EXIT_SUCCESS;
 }
@@ -82,7 +104,7 @@ int detection(char* path)
     
     SDL_Surface* sobel = sobel_operator(surface);
 
-    SDL_SaveBMP(sobel, "out.bmp");
+    SDL_SaveBMP(sobel, "outd.bmp");
     
     return EXIT_SUCCESS;
 }
