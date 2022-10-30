@@ -38,4 +38,4 @@ clean:
 	${RM} ${OBJAPP} ${OBJNET} ${OBJSOL}
 	${RM} ${DEPAPP} ${DEPNET} ${DEPSOL}
 	${RM} ${PRGAPP} ${PRGNET} ${PRGSOL}
-	${RM} *.bmp *.result
+	${RM} *.bmp given_grid/*.result
