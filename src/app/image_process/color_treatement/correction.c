@@ -26,17 +26,17 @@ SDL_Surface* c_gamma(SDL_Surface* s)
 
     Uint32 pixel;
     Uint8 r, g, b;
-    float c_gamma = 1. / 2.5;
+    float c_gamma = 2.0f / (float) (255 - average_pixel(s));
     for(int y = 0; y < h; y++)
     {
         for(int x = 0; x < w; x++)
         {
             pixel = getpixel(s, x, y);
             SDL_GetRGB(pixel, s->format, &r, &g, &b);
-            r = Truncate(255.0 * pow((r / 255.0),c_gamma));
-            g = Truncate(255.0 * pow((g / 255.0),c_gamma));
-            b = Truncate(255.0 * pow((b / 255.0),c_gamma));
-            pixel = SDL_MapRGB(output->format, r, g, b);
+            int nr = Truncate(255.0 * pow((r / 255.0),c_gamma));
+            int ng = Truncate(255.0 * pow((g / 255.0),c_gamma));
+            int nb = Truncate(255.0 * pow((b / 255.0),c_gamma));
+            pixel = SDL_MapRGB(output->format, nr, ng, nb);
             putpixel(output, x, y, pixel);
         }
     }
