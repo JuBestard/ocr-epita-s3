@@ -69,7 +69,7 @@ int color_treatement(char* path)
         surface = scaling(surface);
 
 
-    printf("grayscale...\n");
+    /*printf("grayscale...\n");
     grayscale(surface);
     printf("blur...\n");
     SDL_Surface* sblur = blur(surface);
@@ -81,18 +81,19 @@ int color_treatement(char* path)
     printf("otsu...\n");
     otsu(sgamma);
 
-    SDL_SaveBMP(sgamma, "out.bmp");
+    SDL_SaveBMP(sgamma, "out.bmp");*/
     
-    /*SDL_Surface* sgamma = c_gamma(surface);
+    SDL_Surface* sgamma = c_gamma(surface);
+    SDL_SaveBMP(sgamma,"gamma.bmp");
     SDL_Surface* scontrast = c_contrast(sgamma);
     grayscale(scontrast);
     SDL_Surface* sblur = blur(scontrast);
     otsu(sblur);
-    SDL_SaveBMP(sblur, "out.bmp");*/
+    SDL_SaveBMP(sblur, "out.bmp");
 
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sgamma);
-    //SDL_FreeSurface(scontrast);
+    SDL_FreeSurface(scontrast);
     SDL_FreeSurface(sblur);
 
     return EXIT_SUCCESS;
