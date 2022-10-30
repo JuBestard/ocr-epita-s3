@@ -89,7 +89,7 @@ int color_treatement(char* path)
     SDL_Surface* sblur = blur(scontrast);
     otsu(sblur);
     SDL_SaveBMP(sblur, "out.bmp");
-
+    
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sgamma);
     SDL_FreeSurface(scontrast);
@@ -103,7 +103,7 @@ int detection(char* path)
     SDL_Surface* surface = load_image(path);
     
     SDL_Surface* sobel = sobel_operator(surface);
-    IMG_SavePNG(sobel, "sobel.png");
+    
     SDL_SaveBMP(sobel, "outd.bmp");
     
     return EXIT_SUCCESS;
