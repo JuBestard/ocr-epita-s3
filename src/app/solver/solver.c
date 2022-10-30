@@ -26,7 +26,7 @@ int ColCheck(int val, int board[9][9], int col)
 int BoxCheck(int val, int board[9][9], int row, int col)
 // return 1 if the value is not already on the box (3x3)
 {
-    int i = row-(row%3), j = col-(col%3);  // ou encore : _i = 3*(i/3), _j = 3*(j/3);
+    int i = row-(row%3), j = col-(col%3);
     for (row = i; row < i+3; row++)
         for (col = j; col < j+3; col++)
             if (board[row][col] == val)
