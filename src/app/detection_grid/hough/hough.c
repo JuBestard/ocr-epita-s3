@@ -41,4 +41,7 @@ void hough(SDL_Surface* s)
             }
         }
     }
+
+
+
 }
