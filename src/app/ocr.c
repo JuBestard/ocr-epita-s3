@@ -84,9 +84,13 @@ int color_treatement(char* path)
     SDL_SaveBMP(sgamma, "out.bmp");*/
     
     SDL_Surface* sgamma = c_gamma(surface);
+    SDL_SaveBMP(sgamma, "gamma.bmp");
     SDL_Surface* scontrast = c_contrast(sgamma);
+    SDL_SaveBMP(scontrast, "contrast.bmp");
     grayscale(scontrast);
+    SDL_SaveBMP(scontrast, "grayscale.bmp");
     SDL_Surface* sblur = blur(scontrast);
+    SDL_SaveBMP(sblur, "blur.bmp");
     otsu(sblur);
     SDL_SaveBMP(sblur, "out.bmp");
     
