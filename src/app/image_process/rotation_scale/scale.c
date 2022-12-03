@@ -11,18 +11,19 @@ SDL_Surface* scaling(SDL_Surface* s)
     SDL_PixelFormat* pformat = s->format;
     int bpp = s->format->BitsPerPixel;
 
-    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,w/2,h/2,
+
+    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,680,680,
             bpp, pformat->format);
 
-    int x_scale = w/output->w;
-    int y_scale = h/output->h;
+    int xratio = w/output->w;
+    int yratio = h/output->h;
 
     for(int x = 0; x < output->w; x++)
     {
         for(int y = 0; y < output->h; y++)
         {
-            int xp = floor(x * x_scale);
-            int yp = floor(y * y_scale);
+            int xp = floor(x * xratio);
+            int yp = floor(y * yratio);
             putpixel(output,x,y,getpixel(s,xp,yp));
         }
     }

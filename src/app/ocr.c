@@ -1,4 +1,5 @@
 #include "detection_grid/edge_detection/sobel_operator.h"
+#include "detection_grid/hough/hough.h"
 #include "image_process/rotation_scale/rotation.h"
 #include "image_process/rotation_scale/scale.h"
 #include "image_process/color_treatement/otsu.h"
@@ -65,24 +66,8 @@ int color_treatement(char* path)
 {
     SDL_Surface* surface = load_image(path);
 
-    if(surface->w > 1500)
-        surface = scaling(surface);
+    surface = scaling(surface);
 
-
-    /*printf("grayscale...\n");
-    grayscale(surface);
-    printf("blur...\n");
-    SDL_Surface* sblur = blur(surface);
-    printf("gamma...\n");
-    SDL_Surface* sgamma = c_gamma(sblur);
-    
-    //printf("contrast...\n");
-    //SDL_Surface* scontrast = c_contrast(sgamma);
-    printf("otsu...\n");
-    otsu(sgamma);
-
-    SDL_SaveBMP(sgamma, "out.bmp");*/
-    
     SDL_Surface* sgamma = c_gamma(surface);
     SDL_Surface* scontrast = c_contrast(sgamma);
     grayscale(scontrast);
@@ -101,11 +86,10 @@ int color_treatement(char* path)
 int detection(char* path)
 {
     SDL_Surface* surface = load_image(path);
-    
     SDL_Surface* sobel = sobel_operator(surface);
-    
     SDL_SaveBMP(sobel, "outd.bmp");
-    
+    hough(sobel);
+
     return EXIT_SUCCESS;
 }
 
