@@ -129,7 +129,7 @@ void hough(SDL_Surface* s)
                 drawLine(output, x, y, vector[x][y][0], vector[x][y][1], linePixel3);
             }
         }
-    }*/
+    }
     SDL_SaveBMP(output, "hough.bmp");
     /*
         on prend le premier point et denier pour creer un vecteur (x1- x2, y1-y2)
