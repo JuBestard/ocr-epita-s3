@@ -22,7 +22,7 @@ SDL_Surface* rotation(SDL_Surface* s, double degree)
     double sinus = sin(angle);
     double cosinus = cos(angle);
 
-    Uint32 black = SDL_MapRGB(pixel_format, 0, 0, 0);   
+    Uint32 white = SDL_MapRGB(pixel_format, 255, 255, 255);   
 
     for(int x = 0; x < w; x++)
     {
@@ -36,7 +36,7 @@ SDL_Surface* rotation(SDL_Surface* s, double degree)
                 putpixel(output, x, y, getpixel(s, (int)xp, (int)yp));
             }
             else
-                putpixel(output, x, y, black);
+                putpixel(output, x, y, white);
         }
     }
     return output;

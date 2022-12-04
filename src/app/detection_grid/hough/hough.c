@@ -117,7 +117,7 @@ void hough(SDL_Surface* s)
         }
     }
 
-    SDL_Surface* output = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
+    SDL_Surface* gridlines = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
 
     for(int r = 0; r < rho; r++)
     {
@@ -149,6 +149,7 @@ void hough(SDL_Surface* s)
                 accY1[maxA] = y1;
                 accX2[maxA] = x2;
                 accY2[maxA] = y2;
+                drawLine(gridlines, x1, y1, x2, y2, SDL_MapRGB(s->format, 255, 0, 0));
                 maxA++;
                 flagFirst = 0;
             }
@@ -240,12 +241,12 @@ void hough(SDL_Surface* s)
     SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, hauteur, 16, 0, 0, 0, 0);
     SDL_BlitSurface(otsu, &src, out, NULL);
     SDL_SaveBMP(out, "out/grid.bmp");
+    SDL_SaveBMP(gridlines, "out/gridlines.bmp");
     /*
     trouver l'angle le plus petit entre vecteur vertical et tout les vecteurs -> angle de rotate
     decoupe l'image
-
-    calculer ratio largeur/9
-
     */
-    SDL_FreeSurface(output);
+    SDL_FreeSurface(out);
+    SDL_FreeSurface(otsu);
+    SDL_FreeSurface(gridlines);
 }

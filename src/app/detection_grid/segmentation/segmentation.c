@@ -1,4 +1,5 @@
 #include "detection_grid/segmentation/segmentation.h"
+#include "image_process/rotation_scale/scale.h"
 #include "image_process/toolbox/pixels_op.h"
 #include "SDL2/SDL_surface.h"
 #include "tools.h"
@@ -69,10 +70,12 @@ void splitting(char* path)
             SDL_Rect rect = {i * w/9, j * h/9, w/9, h/9};
             SDL_BlitSurface(s, &rect, dst, NULL);
             clean(dst);
+            SDL_Surface* final = resize(dst, 28, 28);
             char file[200];
             snprintf(file, 200, "out/split/%i.bmp", n++);
-            SDL_SaveBMP(dst, file);
+            SDL_SaveBMP(final, file);
             SDL_FreeSurface(dst);
+            SDL_FreeSurface(final);
         }
     }
     SDL_FreeSurface(s);
