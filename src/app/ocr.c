@@ -66,7 +66,7 @@ int color_treatement(char* path)
 {
     SDL_Surface* surface = load_image(path);
 
-    surface = scaling(surface);
+    //surface = scaling(surface);
 
     SDL_Surface* sgamma = c_gamma(surface);
     SDL_SaveBMP(sgamma, "gamma.bmp");
