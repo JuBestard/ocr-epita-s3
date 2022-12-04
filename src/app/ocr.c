@@ -1,5 +1,6 @@
 #include "detection_grid/edge_detection/sobel_operator.h"
 #include "detection_grid/hough/hough.h"
+#include "detection_grid/segmentation/segmentation.h"
 #include "image_process/rotation_scale/rotation.h"
 #include "image_process/rotation_scale/scale.h"
 #include "image_process/color_treatement/otsu.h"
@@ -77,7 +78,7 @@ int color_treatement(char* path)
     SDL_Surface* sblur = blur(scontrast);
     SDL_SaveBMP(sblur, "blur.bmp");
     otsu(sblur);
-    SDL_SaveBMP(sblur, "out.bmp");
+    SDL_SaveBMP(sblur, "out/out.bmp");
     
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sgamma);
@@ -87,13 +88,14 @@ int color_treatement(char* path)
     return EXIT_SUCCESS;
 }
 
-int detection(char* path)
+int detection()
 {
-    SDL_Surface* surface = load_image(path);
+    SDL_Surface* surface = load_image("out/out.bmp");
     SDL_Surface* sobel = sobel_operator(surface);
-    SDL_SaveBMP(sobel, "outd.bmp");
     hough(sobel);
-
+    splitting("out/grid.bmp");
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(sobel);
     return EXIT_SUCCESS;
 }
 
@@ -103,12 +105,12 @@ int main(int argc, char** argv)
     char* color = "color";
     char* srotate = "rotate";
     char* detect = "detect";
-    if(argc <= 2)
+    if(argc <= 1)
         return usage();
     if(argc == 3 && strcmp(argv[1], color) == 0)
         return color_treatement(argv[2]);
-    if(argc == 3 && strcmp(argv[1], detect) == 0)
-        return detection(argv[2]);
+    if(argc == 2 && strcmp(argv[1], detect) == 0)
+        return detection();
     if(argc == 3)
         return usage();   
     if(argc == 4 && strcmp(argv[1], srotate) != 0)

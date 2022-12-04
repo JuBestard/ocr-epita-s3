@@ -236,10 +236,10 @@ void hough(SDL_Surface* s)
     src.w = longueur;
     src.h = hauteur;
 
-    SDL_Surface* otsu = load_image("out.bmp");
+    SDL_Surface* otsu = load_image("out/out.bmp");
     SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, hauteur, 16, 0, 0, 0, 0);
     SDL_BlitSurface(otsu, &src, out, NULL);
-    SDL_SaveBMP(out, "grid.bmp");
+    SDL_SaveBMP(out, "out/grid.bmp");
     /*
     trouver l'angle le plus petit entre vecteur vertical et tout les vecteurs -> angle de rotate
     decoupe l'image
