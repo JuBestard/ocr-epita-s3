@@ -6,9 +6,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_surface.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
 
 #define RES 10 //ressemblance a XX pixels pres
 
@@ -243,7 +240,6 @@ void hough(SDL_Surface* s)
     SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, hauteur, 16, 0, 0, 0, 0);
     SDL_BlitSurface(otsu, &src, out, NULL);
     SDL_SaveBMP(out, "grid.bmp");
-    IMG_SavePNG(out, "grid.png");
     /*
     trouver l'angle le plus petit entre vecteur vertical et tout les vecteurs -> angle de rotate
     decoupe l'image
