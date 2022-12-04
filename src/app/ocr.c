@@ -65,8 +65,8 @@ int rotate(char* path, double degree)
 int color_treatement(char* path)
 {
     SDL_Surface* surface = load_image(path);
-
-    //surface = scaling(surface);
+    if(surface->w > 1500)
+        surface = scaling(surface);
 
     SDL_Surface* sgamma = c_gamma(surface);
     SDL_SaveBMP(sgamma, "gamma.bmp");

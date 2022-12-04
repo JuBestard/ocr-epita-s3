@@ -4,12 +4,13 @@
 #include "math.h"
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_surface.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
 
-#define RES 100 //ressemblance a XX pixels pres
+#define RES 10 //ressemblance a XX pixels pres
 
 void drawLine(SDL_Surface* s, int x1, int y1, int x2, int y2, Uint32 pixel)
 {
@@ -100,7 +101,7 @@ void hough(SDL_Surface* s)
             SDL_GetRGB(pixel, s->format, &r, &g, &b);
 
             //if white
-            if (r >= 155)
+            if (r >= 100)
             {
                 for (int t = 0; t < 180;t++)
                 {
@@ -118,10 +119,6 @@ void hough(SDL_Surface* s)
                 accMax = acc[r][t];
         }
     }
-    printf("%i\n", accMax);
-    Uint32 linePixel1 = SDL_MapRGB(s->format, 255, 0, 0);
-    Uint32 linePixel2 = SDL_MapRGB(s->format, 0, 255, 0);
-    Uint32 linePixel3 = SDL_MapRGB(s->format, 0, 0, 255);
 
     SDL_Surface* output = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
 
@@ -129,7 +126,7 @@ void hough(SDL_Surface* s)
     {
         for(int t = 0; t < theta; t++)
         {
-            if(acc[r][t] > accMax*0.4)
+            if(acc[r][t] > accMax*0.44)
             {
                 for(int y = 0; y <height; y++)
                 {
@@ -137,7 +134,6 @@ void hough(SDL_Surface* s)
                     {
                         if(r == abs((int) floor(x * cos(t * M_PI/180) + y*sin(t * M_PI/180))))
                         {
-                            //putpixel(output, x, y, linePixel1);
                             if(flagFirst)
                             {
                                 x2 = x;
@@ -157,7 +153,6 @@ void hough(SDL_Surface* s)
                 accX2[maxA] = x2;
                 accY2[maxA] = y2;
                 maxA++;
-                //drawLine(output, x1, y1, x2, y2, linePixel2);
                 flagFirst = 0;
             }
         }
@@ -196,7 +191,6 @@ void hough(SDL_Surface* s)
         {
             if(checkRes(intX[i], intY[i], intX[j], intY[j]))
             {
-                printf("%i -- %i\n", maxF, j);
                 finX[maxF] = intX[j];
                 finY[maxF] = intY[j];
                 maxF++;
@@ -234,29 +228,24 @@ void hough(SDL_Surface* s)
             ybg = y;
         }
     }
-    putpixel(output, xhg, yhg, linePixel1);
-    putpixel(output, xhd, yhd, linePixel1);
-    putpixel(output, xbg, ybg, linePixel1);
-    putpixel(output, xbd, ybd, linePixel1);
-    printf("%s (%i, %i)\n", "haut gauche:", xhg, yhg);
-    printf("%s (%i, %i)\n", "haut droite:", xhd, yhd);
-    printf("%s (%i, %i)\n", "bas gauche:", xbg, ybg);
-    printf("%s (%i, %i)\n", "bas droite:", xbd, ybg);
-    drawLine(output, xhg, yhg, xhd, yhg, linePixel1);
-    drawLine(output, xhg, yhg, xbg, ybg, linePixel1);
-    drawLine(output, xbg, ybg, xbd, ybd, linePixel1);
-    drawLine(output, xbd, ybd, xhd, yhd, linePixel1);
-    SDL_SaveBMP(output, "hough.bmp");
     free(finX);
     free(finY);
-    /*
-    recuper intersection vecteur
-    regarder les angles entre les vecteurs 2 : > 30 et < 150, j'garde l'intersection
-    clean les intersections
+    
+    int longueur = sqrt((xhd-xhg)*(xhd-xhg)+(yhd-yhg)*(yhd-yhg));
+    int hauteur = sqrt((xbg-xhg)*(xbg-xhg)+(ybg-yhg)*(ybg-yhg));
+    SDL_Rect src;
+    src.x = xbg;
+    src.y = ybg;
+    src.w = longueur;
+    src.h = hauteur;
 
+    SDL_Surface* otsu = load_image("out.bmp");
+    SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, hauteur, 16, 0, 0, 0, 0);
+    SDL_BlitSurface(otsu, &src, out, NULL);
+    SDL_SaveBMP(out, "grid.bmp");
+    IMG_SavePNG(out, "grid.png");
+    /*
     trouver l'angle le plus petit entre vecteur vertical et tout les vecteurs -> angle de rotate
-    pour chaque point si, il a 10 pixel ete rencontre -> skip sinon stock comme point interessant
-    recuperer les 4 point extremes
     decoupe l'image
 
     calculer ratio largeur/9
