@@ -12,7 +12,7 @@ SDL_Surface* scaling(SDL_Surface* s)
     int bpp = s->format->BitsPerPixel;
 
 
-    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,680,680,
+    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,w/2,h/2,
             bpp, pformat->format);
 
     int xratio = w/output->w;
