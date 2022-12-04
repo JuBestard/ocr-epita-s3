@@ -72,12 +72,16 @@ int color_treatement(char* path)
     mkdir("out", S_IRWXU);
     SDL_Surface* surface = load_image(path);
     if(surface->w > 1500)
-        surface = scaling(surface);
+        surface = resize(surface, 800, 800);
 
     SDL_Surface* sgamma = c_gamma(surface);
+    SDL_SaveBMP(sgamma, "out/gamma.bmp");
     SDL_Surface* scontrast = c_contrast(sgamma);
+    SDL_SaveBMP(scontrast, "out/contrast.bmp");
     grayscale(scontrast);
+    SDL_SaveBMP(scontrast, "out/greyscale.bmp");
     SDL_Surface* sblur = blur(scontrast);
+    SDL_SaveBMP(sblur, "out/blur.bmp");
     otsu(sblur);
     SDL_SaveBMP(sblur, "out/out.bmp");
     
