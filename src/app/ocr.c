@@ -17,6 +17,10 @@
 
 #include "err.h"
 #include "math.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+
 void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 {
    SDL_Event event;
@@ -65,6 +69,7 @@ int rotate(char* path, double degree)
 
 int color_treatement(char* path)
 {
+    mkdir("out", S_IRWXU);
     SDL_Surface* surface = load_image(path);
     if(surface->w > 1500)
         surface = scaling(surface);
