@@ -9,10 +9,6 @@
 
 #define RES 10 //ressemblance a XX pixels pres
 #define pi 3.14159265359
-double Convert(int degree)
-{
-    return degree * (pi / 180);
-}
 void drawLine(SDL_Surface* s, int x1, int y1, int x2, int y2, Uint32 pixel)
 {
     double x = x2 - x1;
@@ -58,6 +54,28 @@ int checkRes(int x1, int y1, int x2, int y2)
     return 1;
 }
 
+int checkHorVertTmp(SDL_Surface* s, int x1, int y1, int x2, int y2)
+{
+    int x = x2 - x1;
+    int y = y2 - y1;
+    double aHor = angle(20, 0, x, y);
+    double aVert = angle(0, 20, x, y);
+    if((aHor <= 0.01 && aVert >= 1.51) || (aHor >= 1.51 && aVert <= 0.01))
+    {
+        drawLine(s, x1, y1, x2, y2, SDL_MapRGB(s->format, 0, 255, 0));
+        return 1;
+    }
+    return 0;
+}
+int checkHorVert(int x, int y)
+{
+    double aHor = angle(20, 0, x, y);
+    double aVert = angle(0, 20, x, y);
+    if((aHor <= 0.03 && aVert >= 1.51) || (aHor >= 1.51 && aVert <= 0.03))
+        return 1;
+    return 0;
+}
+
 void hough(SDL_Surface* s)
 {
     int width = s->w;
@@ -72,12 +90,6 @@ void hough(SDL_Surface* s)
     int* accY1 = malloc(sizeof(int) * width*height);
     int* accX2 = malloc(sizeof(int) * width*height);
     int* accY2 = malloc(sizeof(int) * width*height);
-
-    int* intX = malloc(sizeof(int) * width*height);
-    int* intY = malloc(sizeof(int) * width*height);
-
-    int* finX = malloc(sizeof(int) * width*height);
-    int* finY = malloc(sizeof(int) * width*height);
 
     int maxA = 0;
     int maxInt = 0;
@@ -102,7 +114,7 @@ void hough(SDL_Surface* s)
             SDL_GetRGB(pixel, s->format, &r, &g, &b);
 
             //if white
-            if (r >= 100)
+            if (r >= 155)
             {
                 for (int t = 0; t < 180;t++)
                 {
@@ -127,7 +139,7 @@ void hough(SDL_Surface* s)
     {
         for(int t = 0; t < theta; t++)
         {
-            if(acc[r][t] > accMax*0.62)
+            if(acc[r][t] > accMax*0.47)
             {
                 for(int y = 0; y <height; y++)
                 {
@@ -154,6 +166,7 @@ void hough(SDL_Surface* s)
                 accX2[maxA] = x2;
                 accY2[maxA] = y2;
                 drawLine(gridlines, x1, y1, x2, y2, SDL_MapRGB(s->format, 255, 0, 0));
+                checkHorVertTmp(gridlines, x1, y1, x2, y2);
                 maxA++;
                 flagFirst = 0;
             }
@@ -162,6 +175,9 @@ void hough(SDL_Surface* s)
 
     SDL_SaveBMP(gridlines, "out/gridlines.bmp");
     SDL_FreeSurface(gridlines);
+    int* intX = malloc(sizeof(int) *width*height*2);
+    int* intY = malloc(sizeof(int) * width*height*2);
+
     for(int i = 0; i < maxA; i++) //1er vecteur ligne AB
     {
         int ux = accX2[i] - accX1[i];
@@ -173,14 +189,11 @@ void hough(SDL_Surface* s)
             int vy = accY2[j] - accY1[j];
 
             double a = angle(ux, uy, vx, vy);
-
-            if(a > 1.47 && a < 1.67)
+            if(checkHorVert(vx, vy) && a > 1.47 && a < 1.67)
             {
                 int det = uy*vx - vy*ux;
                 int x = uy*accX1[i] - ux*accY1[i];
                 int y = vy*accX1[j] - vx*accY1[j];
-                if(det == 0)
-                    continue;
                 intX[maxInt] = abs((vx*x - ux*y)/det);
                 intY[maxInt] = abs((uy*x - vy*x)/det);
                 maxInt++;
@@ -191,6 +204,9 @@ void hough(SDL_Surface* s)
     free(accY1);
     free(accX2);
     free(accY2);
+
+    int* finX = malloc(sizeof(int) * width*height*2);
+    int* finY = malloc(sizeof(int) * width*height*2);
     for(int i = 0; i < maxInt; i++)
     {
         for(int j = 0; j < maxInt; j++)
@@ -244,7 +260,10 @@ void hough(SDL_Surface* s)
     src.y = ybg;
     src.w = longueur;
     src.h = hauteur;
-
+    printf("%s (%i,%i)\n", "Haut droite", xhd, yhd);
+    printf("%s (%i,%i)\n", "Haut gauche", xhg, yhg);
+    printf("%s (%i,%i)\n", "bas droite", xbd, ybd);
+    printf("%s (%i,%i)\n", "bas gauche", xhg, ybg);
     SDL_Surface* otsu = load_image("out/out.bmp");
     SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, hauteur, 16, 0, 0, 0, 0);
     SDL_BlitSurface(otsu, &src, out, NULL);
