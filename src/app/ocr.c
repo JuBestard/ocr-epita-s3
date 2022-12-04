@@ -72,7 +72,7 @@ int color_treatement(char* path)
     mkdir("out", S_IRWXU);
     SDL_Surface* surface = load_image(path);
     if(surface->w > 1500)
-        surface = resize(surface, 800, 800);
+        surface = resize(surface, surface->w/2, surface->h/2);
 
     SDL_Surface* sgamma = c_gamma(surface);
     SDL_SaveBMP(sgamma, "out/gamma.bmp");
@@ -97,9 +97,8 @@ int detection()
 {
     SDL_Surface* surface = load_image("out/out.bmp");
     SDL_Surface* sobel = sobel_operator(surface);
-    houghTransformation(sobel);
-    //hough(sobel);
-    //splitting("out/grid.bmp");
+    hough(sobel);
+    splitting("out/grid.bmp");
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sobel);
     return EXIT_SUCCESS;
