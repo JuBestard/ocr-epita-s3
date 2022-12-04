@@ -97,8 +97,9 @@ int detection()
 {
     SDL_Surface* surface = load_image("out/out.bmp");
     SDL_Surface* sobel = sobel_operator(surface);
-    hough(sobel);
-    splitting("out/grid.bmp");
+    houghTransformation(sobel);
+    //hough(sobel);
+    //splitting("out/grid.bmp");
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sobel);
     return EXIT_SUCCESS;
