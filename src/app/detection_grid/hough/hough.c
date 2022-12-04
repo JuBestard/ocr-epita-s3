@@ -34,17 +34,21 @@ void hough(SDL_Surface* s)
     //initialise accumulator array
     int acc[rho][theta];
     
-    int vector[width][height];
-    for(int i = 0; i < width; i++)
+    int* vecX = malloc(sizeof(int) * width*height);
+    int* vecY = malloc(sizeof(int) * width*height);
+    int* vecXF = malloc(sizeof(int) * width*height);
+    int* vecYF = malloc(sizeof(int) * width*height);
+    int maxV = 0;
+    int maxVF = 0;
+
+    for(int i = 0; i < width*height; i++)
     {
-        for(int j = 0; j < height; j++)
-        {
-            for(int k = 0; k < 2; k++)
-                vector[i][j] = 0;
-        }
+        vecX[i] = 0;
+        vecY[i] = 0;
     }
     int flagFirst = 0;
     int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+
     for (int i = 0; i < rho; i++)
     {
         for (int j = 0; j < theta; j++)
@@ -83,7 +87,7 @@ void hough(SDL_Surface* s)
     Uint32 linePixel1 = SDL_MapRGB(s->format, 255, 0, 0);
     Uint32 linePixel2 = SDL_MapRGB(s->format, 0, 255, 0);
     Uint32 linePixel3 = SDL_MapRGB(s->format, 0, 0, 255);
-    SDL_Surface* bw = load_image("out.bmp");
+
     SDL_Surface* output = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
 
     for(int r = 0; r < rho; r++)
@@ -113,31 +117,50 @@ void hough(SDL_Surface* s)
                         }
                     }
                 }
-                //vector[x1][y1][0] = x2;
-                //vector[x1][y1][1] = y2;
+                vecX[maxV] = x2-x1;
+                vecY[maxV] = y2-y1;
+                maxV++;
+                drawLine(output, x1, y1, x2, y2, linePixel2);
                 flagFirst = 0;
             }
         }
     }
-    /*for(int y = 0; y < height; y++)
+
+    for(int i = 0; i < maxV; i++)
     {
-        for(int x = 0; x < width; x++)
+        for(int j = 0; j < maxV; j++)
         {
-            if(vector[x][y][0] != 0 && vector[x][y][1] != 0)
+            if(j == i)
             {
-                printf("%i --- %i\n", vector[x][y][0], vector[x][y][1]);
-                drawLine(output, x, y, vector[x][y][0], vector[x][y][1], linePixel3);
+                continue;
+            }
+            double aNum = (vecX[i] * vecX[j] + vecY[i] * vecY[j]);
+            double aDen = sqrt(vecX[i] * vecX[i] + vecY[i] * vecY[i]);
+            aDen *= sqrt(vecX[j] * vecX[j] + vecY[j] * vecY[j]);
+            double a = aNum/aDen;
+            if(a > 60 && a < 130)
+            {
+                vecXF[maxVF] = 0;
+                vecYF[maxVF] = 0;
             }
         }
     }
+    free(vecX);
+    free(vecY);
+    /*for(int i = 0; i < maxVF; i++)
+    {
+        for(int j = 0; j < maxVF; j++)
+        {
+            
+        }
+    }*/
+
     SDL_SaveBMP(output, "hough.bmp");
     /*
-        on prend le premier point et denier pour creer un vecteur (x1- x2, y1-y2)
-        flag pour le premier
-            ligne entre 1er et dernier
     recuper intersection vecteur
     regarder les angles entre les vecteurs 2 : > 30 et < 150, j'garde l'intersection
     clean les intersections
+
     trouver l'angle le plus petit entre vecteur vertical et tout les vecteurs -> angle de rotate
     pour chaque point si, il a 10 pixel ete rencontre -> skip sinon stock comme point interessant
     recuperer les 4 point extremes
