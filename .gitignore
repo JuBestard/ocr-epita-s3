@@ -54,3 +54,6 @@ dkms.conf
 *.bmp
 *.png
 *.result
+ocr
+neuralnet
+solver
