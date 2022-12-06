@@ -14,14 +14,7 @@ OBJAPP = ${SRCAPP:.c=.o}
 DEPAPP = ${SRCAPP:.c=.d}
 PRGAPP = ocr
 
-
-SRCSOL = $(wildcard src/app/image_process/toolbox/*.c) $(wildcard src/app/solver/*.c) 
-OBJSOL = ${SRCSOL:.c=.o}
-DEPSOL = ${SRCSOL:.c=.d}
-PRGSOL = solver
-
-
-all: ${PRGAPP} ${PRGNET} ${PRGSOL}
+all: ${PRGAPP} ${PRGNET}
 
 ${PRGNET}: ${OBJNET}
 	$(CC)  -o $(PRGNET) $(OBJNET) -lm -ldl
@@ -29,13 +22,11 @@ ${PRGNET}: ${OBJNET}
 ${PRGAPP}: ${OBJAPP}
 	$(CC) $(CFLAGS) -o $(PRGAPP) $(OBJAPP) $(LDLIBS)
 
-${PRGSOL}: ${OBJSOL}
-	$(CC) $(CFLAGS) -o $(PRGSOL) $(OBJSOL) $(LDLIBS)
 
 .PHONY: clean
 
 clean:
-	${RM} ${OBJAPP} ${OBJNET} ${OBJSOL}
-	${RM} ${DEPAPP} ${DEPNET} ${DEPSOL}
-	${RM} ${PRGAPP} ${PRGNET} ${PRGSOL}
+	${RM} ${OBJAPP} ${OBJNET}
+	${RM} ${DEPAPP} ${DEPNET}
+	${RM} ${PRGAPP} ${PRGNET}
 	rm -rf out/ given_grid/*.result
