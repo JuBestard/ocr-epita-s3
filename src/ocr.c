@@ -1,3 +1,4 @@
+#include "ocr.h"
 #include "detection_grid/edge_detection/sobel_operator.h"
 #include "detection_grid/hough/hough.h"
 #include "detection_grid/segmentation/segmentation.h"
@@ -7,6 +8,8 @@
 #include "image_process/color_treatement/grayscale.h"
 #include "image_process/color_treatement/blur.h"
 #include "image_process/color_treatement/correction.h"
+#include "solver/solver.h"
+#include "solver/load_save.h"
 #include "tools.h"
 
 #include <SDL2/SDL_image.h>
@@ -104,24 +107,30 @@ int detection()
     return EXIT_SUCCESS;
 }
 
+int solve()
+{
+    int gridsolved[9][9];
+    int gridunsolved[9][9];
+    load_grid("given_grid/grid_01", gridunsolved);
+    load_grid("given_grid/grid_01", gridsolved);
+    Solve(gridsolved,0);
+    save_grid(gridsolved, "out/grid.result");
+    render_grid(gridunsolved,gridsolved);
+    return EXIT_SUCCESS;
+}
+
+int launch(char* path)
+{
+    color_treatement(path);
+    detection();
+    //fonction d'appel de l'ocr
+    solve();
+    return EXIT_SUCCESS;
+}
+
 int main(int argc, char** argv)
 {
-    // Checks the number of arguments
-    char* color = "color";
-    char* srotate = "rotate";
-    char* detect = "detect";
-    if(argc <= 1)
+    if(argc != 2)
         return usage();
-    if(argc == 3 && strcmp(argv[1], color) == 0)
-        return color_treatement(argv[2]);
-    if(argc == 2 && strcmp(argv[1], detect) == 0)
-        return detection();
-    if(argc == 3)
-        return usage();   
-    if(argc == 4 && strcmp(argv[1], srotate) != 0)
-        return usage();
-    if(argc == 4)
-        return rotate(argv[2], atof(argv[3]));
-    else
-        return usage();
+    return launch(argv[1]);
 }

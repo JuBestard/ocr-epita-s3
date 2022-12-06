@@ -1,5 +1,5 @@
 CC = gcc -g -I include/
-CFLAGS = -Wall -Wextra -O2 -D__NO_INLINE__ `pkg-config --cflags sdl2 SDL2_image`
+CFLAGS = -Wall -Wextra -O2 `pkg-config --cflags sdl2 SDL2_image`
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
 
 
@@ -9,7 +9,7 @@ DEPNET = ${SRCNET:.c=.d}
 PRGNET = neuralnet
 
 
-SRCAPP = $(wildcard src/app/image_process/*/*.c) $(wildcard src/app/detection_grid/*/*.c) src/app/ocr.c
+SRCAPP = $(wildcard src/app/*/*/*.c) $(wildcard src/app/solver/*.c) src/ocr.c
 OBJAPP = ${SRCAPP:.c=.o}
 DEPAPP = ${SRCAPP:.c=.d}
 PRGAPP = ocr
