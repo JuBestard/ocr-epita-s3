@@ -37,9 +37,9 @@ double angle(int x1, int y1, int x2, int y2)
     return acos(aNum/aDen);
 }
 
-int checkRes(int x1, int y1, int x2, int y2)
+int checkRes(int* finX, int* finY, int maxFin, int x, int y)
 {
-    int xMax = x1+RES;
+    /*int xMax = x1+RES;
     int xMin = x1-RES;
     int yMax = y1+RES;
     int yMin = y1-RES;
@@ -51,6 +51,14 @@ int checkRes(int x1, int y1, int x2, int y2)
         return 0;
     if(y2 < yMin)
         return 0;
+    return 1;*/
+
+    for(int i = 0; i < maxFin; i++)
+    {
+        if(finX[i] - RES < x && x < finX[i]+RES && 
+                finY[i] - RES < y && y < finY[i]+RES)
+            return 0;
+    }
     return 1;
 }
 
@@ -71,7 +79,7 @@ int checkHorVert(int x, int y)
 {
     double aHor = angle(20, 0, x, y);
     double aVert = angle(0, 20, x, y);
-    if((aHor <= 0.03 && aVert >= 1.51) || (aHor >= 1.51 && aVert <= 0.03))
+    if((aHor <= 0.01 && aVert >= 1.51) || (aHor >= 1.51 && aVert <= 0.01))
         return 1;
     return 0;
 }
@@ -132,14 +140,13 @@ void hough(SDL_Surface* s)
                 accMax = acc[r][t];
         }
     }
-
     SDL_Surface* gridlines = SDL_ConvertSurface(s, s->format, SDL_SWSURFACE);
 
     for(int r = 0; r < rho; r++)
     {
         for(int t = 0; t < theta; t++)
         {
-            if(acc[r][t] > accMax*0.47)
+            if(acc[r][t] > accMax*0.4)
             {
                 for(int y = 0; y <height; y++)
                 {
@@ -209,63 +216,58 @@ void hough(SDL_Surface* s)
     int* finY = malloc(sizeof(int) * width*height*2);
     for(int i = 0; i < maxInt; i++)
     {
-        for(int j = 0; j < maxInt; j++)
-        {
-            if(checkRes(intX[i], intY[i], intX[j], intY[j]))
+            if(checkRes(finX, finY, maxF, intX[i], intY[i]))
             {
-                finX[maxF] = intX[j];
-                finY[maxF] = intY[j];
+                finX[maxF] = intX[i];
+                finY[maxF] = intY[i];
                 maxF++;
             }
-        }
     }
     free(intX);
     free(intY);
-    int xhd = finX[0], yhd = finY[0];
-    int xbd = finX[0], ybd = finY[0];
-    int xhg = finX[0], yhg = finY[0];
-    int xbg = finX[0], ybg = finY[0];
-
-    for(int i = 1; i < maxF; i++)
+    int xbd = s->w/2, ybd = s->h/2;
+    int xbg = s->w/2, ybg = s->h/2;
+    int xhd = s->w/2, yhd = s->h/2;
+    int xhg = s->w/2, yhg = s->h/2;
+    for(int i = 0; i < maxF; i++)
     {
         int x = finX[i], y = finY[i];
-        if(x <= xhg && y >= yhg)
-        {
-            xhg = x;
-            yhg = y;
-        }
-        else if (x >= xhd && y >= yhd)
-        {
-            xhd = x;
-            yhd = y; 
-        }
-        else if (x >= xbd && y <= ybd)
-        {
-            xbd = x;
-            ybd = y;
-        }
-        else if (x <= xbg && y <= ybg)
+        if(x <= xbg && y >= ybg && y)
         {
             xbg = x;
             ybg = y;
+        }
+        else if (x >= xbd && y >= ybd)
+        {
+            xbd = x;
+            ybd = y; 
+        }
+        else if (x >= xhd && y <= yhd)
+        {
+            xhd = x;
+            yhd = y;
+        }
+        else if (x <= xhg && y <= yhg)
+        {
+            xhg = x;
+            yhg = y;
         }
     }
     free(finX);
     free(finY);
     
-    int longueur = sqrt((xhd-xhg)*(xhd-xhg)+(yhd-yhg)*(yhd-yhg));
-    int hauteur = sqrt((xbg-xhg)*(xbg-xhg)+(ybg-yhg)*(ybg-yhg));
+    int longueur = sqrt((xbd-xbg)*(xbd-xhg)+(ybd-ybg)*(ybd-ybg));
     SDL_Rect src;
     src.x = xbg;
-    src.y = ybg;
+    src.y = ybg-longueur;
     src.w = longueur;
-    src.h = hauteur;
+    src.h = longueur;
     printf("%s (%i,%i)\n", "Haut droite", xhd, yhd);
     printf("%s (%i,%i)\n", "Haut gauche", xhg, yhg);
     printf("%s (%i,%i)\n", "bas droite", xbd, ybd);
-    printf("%s (%i,%i)\n", "bas gauche", xhg, ybg);
+    printf("%s (%i,%i)\n", "bas gauche", xbg, ybg);
     SDL_Surface* otsu = load_image("out/out.bmp");
-    SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, hauteur, 16, 0, 0, 0, 0);
+    SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, longueur, 16, 0, 0, 0, 0);
     SDL_BlitSurface(otsu, &src, out, NULL);
     SDL_SaveBMP(out, "out/grid.bmp");
     /*
