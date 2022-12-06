@@ -3,7 +3,7 @@
 #include <SDL2/SDL_surface.h>
 #include "math.h"
 
-SDL_Surface* scaling(SDL_Surface* s)
+SDL_Surface* resize(SDL_Surface* s, int newW, int newH)
 {
     int w = s->w;
     int h = s->h;
@@ -11,7 +11,7 @@ SDL_Surface* scaling(SDL_Surface* s)
     SDL_PixelFormat* pformat = s->format;
     int bpp = s->format->BitsPerPixel;
 
-    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,w/2,h/2,
+    SDL_Surface* output = SDL_CreateRGBSurfaceWithFormat(0,newW,newH,
             bpp, pformat->format);
 
     int x_scale = w/output->w;

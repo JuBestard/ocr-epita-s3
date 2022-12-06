@@ -1,4 +1,6 @@
 #include "detection_grid/edge_detection/sobel_operator.h"
+#include "detection_grid/hough/hough.h"
+#include "detection_grid/segmentation/segmentation.h"
 #include "image_process/rotation_scale/rotation.h"
 #include "image_process/rotation_scale/scale.h"
 #include "image_process/color_treatement/otsu.h"
@@ -15,6 +17,10 @@
 
 #include "err.h"
 #include "math.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+
 void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
 {
    SDL_Event event;
@@ -63,36 +69,21 @@ int rotate(char* path, double degree)
 
 int color_treatement(char* path)
 {
+    mkdir("out", S_IRWXU);
     SDL_Surface* surface = load_image(path);
-
     if(surface->w > 1500)
-        surface = scaling(surface);
+        surface = resize(surface, surface->w/2, surface->h/2);
 
-
-    /*printf("grayscale...\n");
-    grayscale(surface);
-    printf("blur...\n");
-    SDL_Surface* sblur = blur(surface);
-    printf("gamma...\n");
-    SDL_Surface* sgamma = c_gamma(sblur);
-    
-    //printf("contrast...\n");
-    //SDL_Surface* scontrast = c_contrast(sgamma);
-    printf("otsu...\n");
-    otsu(sgamma);
-
-    SDL_SaveBMP(sgamma, "out.bmp");*/
-    
     SDL_Surface* sgamma = c_gamma(surface);
-    SDL_SaveBMP(sgamma, "gamma.bmp");
+    SDL_SaveBMP(sgamma, "out/gamma.bmp");
     SDL_Surface* scontrast = c_contrast(sgamma);
-    SDL_SaveBMP(scontrast, "contrast.bmp");
+    SDL_SaveBMP(scontrast, "out/contrast.bmp");
     grayscale(scontrast);
-    SDL_SaveBMP(scontrast, "grayscale.bmp");
+    SDL_SaveBMP(scontrast, "out/greyscale.bmp");
     SDL_Surface* sblur = blur(scontrast);
-    SDL_SaveBMP(sblur, "blur.bmp");
+    SDL_SaveBMP(sblur, "out/blur.bmp");
     otsu(sblur);
-    SDL_SaveBMP(sblur, "out.bmp");
+    SDL_SaveBMP(sblur, "out/out.bmp");
     
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sgamma);
@@ -102,14 +93,14 @@ int color_treatement(char* path)
     return EXIT_SUCCESS;
 }
 
-int detection(char* path)
+int detection()
 {
-    SDL_Surface* surface = load_image(path);
-    
+    SDL_Surface* surface = load_image("out/out.bmp");
     SDL_Surface* sobel = sobel_operator(surface);
-    
-    SDL_SaveBMP(sobel, "outd.bmp");
-    
+    hough(sobel);
+    splitting("out/grid.bmp");
+    SDL_FreeSurface(surface);
+    SDL_FreeSurface(sobel);
     return EXIT_SUCCESS;
 }
 
@@ -119,12 +110,12 @@ int main(int argc, char** argv)
     char* color = "color";
     char* srotate = "rotate";
     char* detect = "detect";
-    if(argc <= 2)
+    if(argc <= 1)
         return usage();
     if(argc == 3 && strcmp(argv[1], color) == 0)
         return color_treatement(argv[2]);
-    if(argc == 3 && strcmp(argv[1], detect) == 0)
-        return detection(argv[2]);
+    if(argc == 2 && strcmp(argv[1], detect) == 0)
+        return detection();
     if(argc == 3)
         return usage();   
     if(argc == 4 && strcmp(argv[1], srotate) != 0)
