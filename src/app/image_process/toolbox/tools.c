@@ -3,6 +3,11 @@
 SDL_Surface* load_image(const char* file)
 {
     SDL_Surface* tmp = IMG_Load(file);
+    if(tmp == NULL)
+    {
+        printf("Error : %s\n", SDL_GetError());
+        return NULL;
+    }
     SDL_Surface* off = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGB888, 0);
     SDL_FreeSurface(tmp);
     return off;
