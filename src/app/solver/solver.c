@@ -104,17 +104,3 @@ void render_grid(int gridunsolved[9][9], int grindsolved[9][9])
     SDL_SaveBMP(s, "out/resolve.bmp");
     free(s);
 }
-
-int main(int argc, char** argv)
-{
-    if(argc != 2)
-        errx(1, "usage : ./solver <path-to-grid>");
-    int gridsolved[9][9];
-    int gridunsolved[9][9];
-    load_grid(argv[1], gridunsolved);
-    load_grid(argv[1], gridsolved);
-    Solve(gridsolved, 0);
-    save_grid(gridsolved, strcat(argv[1], ".result"));
-    render_grid(gridunsolved, gridsolved);
-    return 0;
-}

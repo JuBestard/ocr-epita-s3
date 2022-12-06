@@ -60,7 +60,6 @@ void splitting(char* path)
     int h = s->h;
     mkdir("out/split/", S_IRWXU);
 
-    int ratio = w/9;
     int n = 0;
     for(int i = 0; i < 9; i++)
     {
