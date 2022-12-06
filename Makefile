@@ -1,5 +1,5 @@
-CC = gcc -Iinclude/
-CFLAGS = -Wall -Wextra -O3 -D__NO_INLINE__ `pkg-config --cflags sdl2 SDL2_image`
+CC = gcc -g -Iinclude/
+CFLAGS = -Wall -Wextra -O2 -D__NO_INLINE__ `pkg-config --cflags sdl2 SDL2_image` -fsanitize=address
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
 
 
@@ -15,7 +15,7 @@ DEPAPP = ${SRCAPP:.c=.d}
 PRGAPP = ocr
 
 
-SRCSOL = src/app/solver/load_save.c src/app/solver/solver.c
+SRCSOL = $(wildcard src/app/image_process/toolbox/*.c) $(wildcard src/app/solver/*.c) 
 OBJSOL = ${SRCSOL:.c=.o}
 DEPSOL = ${SRCSOL:.c=.d}
 PRGSOL = solver
@@ -30,7 +30,7 @@ ${PRGAPP}: ${OBJAPP}
 	$(CC) $(CFLAGS) -o $(PRGAPP) $(OBJAPP) $(LDLIBS)
 
 ${PRGSOL}: ${OBJSOL}
-	$(CC) $(CFLAGS) -o $(PRGSOL) $(OBJSOL)
+	$(CC) $(CFLAGS) -o $(PRGSOL) $(OBJSOL) $(LDLIBS)
 
 .PHONY: clean
 
