@@ -1,7 +1,10 @@
 #include "solver/solver.h"
 #include "solver/load_save.h"
+#include "SDL2/SDL_surface.h"
+#include "toolbox.h"
 #include "err.h"
 #include "string.h"
+#include <SDL2/SDL_rect.h>
 #include <stdio.h>
 
 
@@ -61,13 +64,31 @@ int Solve(int board[9][9], int position)
     return 0;
 }
 
+void render_grid(int grid[9][9], char* path)
+{
+    SDL_Surface* s = load_image(path);
+
+    for(int i = 0; i < 9; i++)
+    {
+        for(int j = 0; j < 9; j++)
+        {
+            SDL_Rect src = {75, 75, 0, 0};
+            SDL_Rect dst = {75, 75, i*75, j*75};
+        }
+    }
+
+    SDL_SaveBMP(s, "init.bmp");
+}
+
 int main(int argc, char** argv)
 {
     if(argc != 2)
         errx(1, "usage : ./solver <path-to-grid>");
     int grid[9][9];
     load_grid(argv[1], grid);
+    render_grid(grid, "empty.bmp");
     Solve(grid, 0);
     save_grid(grid, strcat(argv[1], ".result"));
+    render_grid(grid, "init.bmp");
     return 0;
 }
