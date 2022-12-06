@@ -1,5 +1,5 @@
-CC = gcc -g -Iinclude/
-CFLAGS = -Wall -Wextra -O3 -D__NO_INLINE__ `pkg-config --cflags sdl2 SDL2_image` -fsanitize=address
+CC = gcc -g -I include/
+CFLAGS = -Wall -Wextra -O2 -D__NO_INLINE__ `pkg-config --cflags sdl2 SDL2_image`
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
 
 
