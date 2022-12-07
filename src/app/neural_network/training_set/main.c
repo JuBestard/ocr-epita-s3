@@ -11,9 +11,15 @@ typedef struct Picture{
     float** image;
 }Picture;
 
-float ReLU(float x)
+float dsigmoid(float x)
 {
-    return x>0 ? x : 0;
+    float e = exp(-x);
+    return e/((1+e)*(1+e));
+}
+
+float sigmoid(float x)
+{
+    return 1./(1+exp(-x));
 }
 
 float** picture;
@@ -22,8 +28,21 @@ float* layers2[10] = {0};
 float* errors2[10] = {0};
 float*  weights2[10] = {0};
 
-int activation = 1; //ReLU
+int activation = 1; // Sigmoid
                     // INITIALIZATION
+
+void save_weight()
+{
+    FILE *ptr = fopen("weight.txt", "w");
+    if (ptr == NULL)
+    {
+        printf("not enough memory");
+        return;
+    }
+    fclose(ptr);
+}
+
+
 void initNet(){
     // ALOCATE MEMORY
     layers2[0] = (float*)malloc((layerSizes2[0]+1) * sizeof(float));
@@ -39,7 +58,8 @@ void initNet(){
     for (int j=1;j<10;j++){
         // XAVIER-HE INITIALIZATION
         scale = 2.0 * sqrt(6.0/(layerSizes2[j] + layerSizes2[j-1]));
-        if (j!=9 && activation==1) scale = scale * 1.41; // RELU
+        if (j!=9 && activation==1) 
+            scale = scale * 1.41; // Sigmoid
         for (int i=0;i<layerSizes2[j] * (layerSizes2[j-1]+1);i++)
             weights2[j][i] = scale * ( (float)rand()/RAND_MAX - 0.5 );
         for (int i=0;i<layerSizes2[j];i++) // BIASES
@@ -49,16 +69,9 @@ void initNet(){
 
 void decrypt_picture(char* file, float*** input)
 {
-    SDL_Surface* picture = SDL_LoadBMP(file);
+    SDL_Surface* picture = IMG_Load(file);
     if (picture  == NULL)
-    {
-        char nb1 = file[0];
-        char nb2 = file[2];
-        asprintf(&file,"%c-%c.bmp",nb1,nb2);
-        picture = SDL_LoadBMP(file);
-        if (picture == NULL)
-            errx(EXIT_FAILURE, "pls enter an existing file");
-    }
+        errx(EXIT_FAILURE, "pls enter an existing file");
     SDL_LockSurface(picture);
     Uint32* pixels = picture -> pixels;
     SDL_PixelFormat* format = picture -> format;
@@ -69,7 +82,6 @@ void decrypt_picture(char* file, float*** input)
             SDL_GetRGB(pixels[i*28+j],format,&r,&g,&b);
             *(*(*(input)+i)+j) = ((r+g+b)/3);
         }        
-
     SDL_FreeSurface(picture);
 }
 
@@ -80,13 +92,13 @@ int forwardProp(){
     float sum, esum, max;
     // INPUT LAYER - RECEIVES 28X28 IMAGES
     for (i=0;i<784;i++) layers2[10-numLayers][i] = picture[i/28][i%28];
-    // HIDDEN LAYERS - RELU ACTIVATION
+    // HIDDEN LAYERS - Sigmoid ACTIVATION
     for (k=11-numLayers;k<9;k++)
         for (i=0;i<layerSizes2[k];i++){
             sum = 0.0;
             for (j=0;j<layerSizes2[k-1]+1;j++)
                 sum += layers2[k-1][j]*weights2[k][i*(layerSizes2[k-1]+1)+j];
-            layers2[k][i] = ReLU(sum);
+            layers2[k][i] = sigmoid(sum);
         }
     // OUTPUT LAYER - SOFTMAX ACTIVATION
     esum = 0.0;
@@ -106,6 +118,7 @@ int forwardProp(){
             imax = i;
         }
         layers2[9][i] = layers2[9][i] / esum;
+        printf("%d = %f\n",i,layers2[9][i]);
     }
     return imax;
 }
@@ -115,7 +128,6 @@ float decay = 0.95;
 // BACKPROPAGATION
 int backProp(int x, int epoch, float *ent){
     int i, j, k, r = 0;
-    float der=1.0;
     // FORWARD PROP FIRST
     int p = forwardProp();
     if (p==-1) return -1; // GRADIENT EXPLODED
@@ -134,9 +146,9 @@ int backProp(int x, int epoch, float *ent){
     for (k=8;k>10-numLayers;k--)
         for (i=0;i<layerSizes2[k];i++){
             errors2[k][i] = 0;
-            if (layers2[k][i]>0 || activation==2) // ReLU DERIVATIVE
+            if (layers2[k][i]>0) // Sigmoid DERIVATIVE
                 for (j=0;j<layerSizes2[k+1];j++)
-                    errors2[k][i] += errors2[k+1][j]*weights2[k+1][j*(layerSizes2[k]+1)+i]*der;
+                    errors2[k][i] += errors2[k+1][j]*dsigmoid(weights2[k+1][j*(layerSizes2[k]+1)+i]);
         }
     // UPDATE WEIGHTS - GRADIENT DESCENT
     for (k=11-numLayers;k<10;k++)
@@ -159,26 +171,21 @@ int main()
     init(&picture);
     initNet();
     float res;
-    for (int i=0;i<10000;i++)
+    for (int i=0;i<100;i++)
     {
         printf("----------------epoch: %d----------------\n",i+1);
-        for (size_t k=0;k<9;k++)
+        for (size_t k=0;k<=9;k++)
         {
-            int x = ((int)rand())%6;
-            asprintf(&file,"%d_%d.bmp",k+1,x);
+            int x = ((int)rand())%306;
+            char* nb;
+            asprintf(&nb,"%d",x);
+            asprintf(&file,"%d-%s%s.png",k,strlen(nb)==1 ? "000"
+                    : strlen(nb)==2 ? "00" : "0",nb);
+            printf("%s",file);
             decrypt_picture(file,&picture);
-            int r = backProp(k+1,i,&res);
-            if (r == 1)
-            {
-                for (size_t y = 0;y<28;y++)
-                {
-                    for(size_t x= 0; x<28; x++)
-                        printf("%s",picture[y][x]>225 ? "█": " ");
-                    printf("\n");
-                }
-                printf("picture of %ld : %s\n", k+1, r==1 ? "yes" : "no");
-            }
+            backProp(k+1,i,&res);
         }
     }
+    save_weight();
     return EXIT_SUCCESS;
 }
