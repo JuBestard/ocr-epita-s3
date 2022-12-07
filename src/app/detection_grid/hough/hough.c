@@ -39,20 +39,6 @@ double angle(int x1, int y1, int x2, int y2)
 
 int checkRes(int* finX, int* finY, int maxFin, int x, int y)
 {
-    /*int xMax = x1+RES;
-    int xMin = x1-RES;
-    int yMax = y1+RES;
-    int yMin = y1-RES;
-    if(x2 > xMax)
-        return 0;
-    if(x2 < xMin)
-        return 0;
-    if(y2 > yMax)
-        return 0;
-    if(y2 < yMin)
-        return 0;
-    return 1;*/
-
     for(int i = 0; i < maxFin; i++)
     {
         if(finX[i] - RES < x && x < finX[i]+RES && 
@@ -232,22 +218,22 @@ void hough(SDL_Surface* s)
     for(int i = 0; i < maxF; i++)
     {
         int x = finX[i], y = finY[i];
-        if(x <= xbg && y >= ybg && y)
+        if(x <= xbg && y >= ybg && x <= 1180)
         {
             xbg = x;
             ybg = y;
         }
-        else if (x >= xbd && y >= ybd)
+        else if (x >= xbd && y >= ybd && x <= 1180)
         {
             xbd = x;
             ybd = y; 
         }
-        else if (x >= xhd && y <= yhd)
+        else if (x >= xhd && y <= yhd && x <= 1180)
         {
             xhd = x;
             yhd = y;
-        }
-        else if (x <= xhg && y <= yhg)
+        } 
+        else if (x <= xhg && y <= yhg && x <= 1180)
         {
             xhg = x;
             yhg = y;
@@ -257,23 +243,12 @@ void hough(SDL_Surface* s)
     free(finY);
     
     int longueur = sqrt((xbd-xbg)*(xbd-xhg)+(ybd-ybg)*(ybd-ybg));
-    SDL_Rect src;
-    src.x = xbg;
-    src.y = ybg-longueur;
-    src.w = longueur;
-    src.h = longueur;
-    printf("%s (%i,%i)\n", "Haut droite", xhd, yhd);
-    printf("%s (%i,%i)\n", "Haut gauche", xhg, yhg);
-    printf("%s (%i,%i)\n", "bas droite", xbd, ybd);
-    printf("%s (%i,%i)\n", "bas gauche", xbg, ybg);
+    SDL_Rect src = {xbg, ybg-longueur, longueur, longueur};
     SDL_Surface* otsu = load_image("out/out.bmp");
     SDL_Surface* out = SDL_CreateRGBSurface(0, longueur, longueur, 16, 0, 0, 0, 0);
     SDL_BlitSurface(otsu, &src, out, NULL);
     SDL_SaveBMP(out, "out/grid.bmp");
-    /*
-    trouver l'angle le plus petit entre vecteur vertical et tout les vecteurs -> angle de rotate
-    decoupe l'image
-    */
+
     SDL_FreeSurface(out);
     SDL_FreeSurface(otsu);
 }
