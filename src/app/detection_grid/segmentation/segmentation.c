@@ -66,7 +66,7 @@ void splitting(char* path)
         for(int j = 0; j < 9; j++)
         {
             SDL_Surface* dst = SDL_CreateRGBSurface(0, w/9, h/9, 32, 0, 0, 0, 0);
-            SDL_Rect rect = {i * w/9, j * h/9, w/9, h/9};
+            SDL_Rect rect = {j * w/9, i * h/9, w/9, h/9};
             SDL_BlitSurface(s, &rect, dst, NULL);
             clean(dst);
             SDL_Surface* final = resize(dst, 28, 28);
