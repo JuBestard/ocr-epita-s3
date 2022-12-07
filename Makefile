@@ -8,16 +8,23 @@ OBJNET = ${SRCNET:.c=.o}
 DEPNET = ${SRCNET:.c=.d}
 PRGNET = neuralnet
 
+#SRCSOL = $(wildcard src/app/solver/*.c)
+#OBJSOL = ${SRCSOL:.c=.o}
+#DEPSOL = ${SRCSOL:.c=.d}
+#PRGSOL = solver
 
 SRCAPP = $(wildcard src/app/*/*/*.c) $(wildcard src/app/solver/*.c) src/ocr.c
 OBJAPP = ${SRCAPP:.c=.o}
 DEPAPP = ${SRCAPP:.c=.d}
 PRGAPP = ocr
 
-all: ${PRGAPP} ${PRGNET}
+all: ${PRGAPP} ${PRGNET} ${PRGSOL}
 
 ${PRGNET}: ${OBJNET}
 	$(CC)  -o $(PRGNET) $(OBJNET) -lm -ldl
+
+#${PRGSOL}: ${OBJSOL}
+#	$(CC) $(CFLAGS) -o $(PRGSOL) $(OBJNET) $(LDLIBS)
 
 ${PRGAPP}: ${OBJAPP}
 	$(CC) $(CFLAGS) -o $(PRGAPP) $(OBJAPP) $(LDLIBS)
@@ -26,7 +33,7 @@ ${PRGAPP}: ${OBJAPP}
 .PHONY: clean
 
 clean:
-	${RM} ${OBJAPP} ${OBJNET}
-	${RM} ${DEPAPP} ${DEPNET}
-	${RM} ${PRGAPP} ${PRGNET}
+	${RM} ${OBJAPP} ${OBJNET} ${OBJSOL}
+	${RM} ${DEPAPP} ${DEPNET} ${DEPSOL}
+	${RM} ${PRGAPP} ${PRGNET} ${PRGSOL}
 	rm -rf out/ given_grid/*.result
