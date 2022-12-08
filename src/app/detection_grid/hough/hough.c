@@ -8,7 +8,6 @@
 #include <SDL2/SDL_surface.h>
 
 #define RES 10 //ressemblance a XX pixels pres
-#define pi 3.14159265359
 void drawLine(SDL_Surface* s, int x1, int y1, int x2, int y2, Uint32 pixel)
 {
     double x = x2 - x1;
