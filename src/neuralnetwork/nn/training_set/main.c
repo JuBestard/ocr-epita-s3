@@ -35,7 +35,7 @@ int test[1] = {0};
 
 void save_weight()
 {
-    FILE *ptr = fopen("weight.txt", "w");
+    FILE *ptr = fopen("src/neuralnetwork/nn/training_set/weight.txt", "w");
     if (ptr == NULL)
     {
         printf("Not enough memory\n");
@@ -51,7 +51,7 @@ void save_weight()
 
 int load_weight()
 {
-    FILE *ptr = fopen("weight.txt", "r");
+    FILE *ptr = fopen("src/neuralnetwork/nn/training_set/weight.txt", "r");
     if (ptr == NULL)
     {
         printf("Not enough memory\n");
