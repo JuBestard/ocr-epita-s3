@@ -81,8 +81,8 @@ void solve()
 {
     int gridsolved[9][9];
     int gridunsolved[9][9];
-    load_grid("given_grid/grid", gridunsolved);
-    load_grid("given_grid/grid", gridsolved);
+    load_grid("out/grid", gridunsolved);
+    load_grid("out/grid", gridsolved);
     Solve(gridsolved,0);
     save_grid(gridsolved, "out/grid.result");
     render_grid(gridunsolved,gridsolved);
@@ -94,17 +94,17 @@ void backup(char* path)
     if(strcmp(path, "given_grid/image_01.jpeg") == 0)
     {
         load_grid("given_grid/grids/image01", grid);
-        save_grid(grid, "given_grid/grid");
+        save_grid(grid, "out/grid");
     }
     else if(strcmp(path, "given_grid/image_02.jpeg") == 0)
     {
         load_grid("given_grid/grids/image02", grid);
-        save_grid(grid, "given_grid/grid");
+        save_grid(grid, "out/grid");
     }
     else if(strcmp(path, "given_grid/image_04.jpeg") == 0)
     {
         load_grid("given_grid/grids/image04", grid);
-        save_grid(grid, "given_grid/grid");
+        save_grid(grid, "out/grid");
     }
 }
 
