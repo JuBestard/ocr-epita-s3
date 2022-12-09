@@ -12,8 +12,6 @@
 #include "solver/load_save.h"
 #include "tools.h"
 
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_render.h>
 #include <SDL2/SDL_surface.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,30 +21,6 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
-void event_loop(SDL_Renderer* renderer, SDL_Texture* texture)
-{
-   SDL_Event event;
-   while(1)
-   {
-       SDL_WaitEvent(&event);
-       switch(event.type)
-       {
-            case SDL_QUIT:
-               return;
-            case SDL_WINDOWEVENT:
-               if(event.window.event == SDL_WINDOWEVENT_RESIZED)
-               {
-                   draw(renderer, texture);
-               }
-               break;
-            case SDL_KEYDOWN:
-                if(event.key.keysym.sym == SDLK_ESCAPE)
-                    return;
-                break;
-       }
-   }
-}
 
 int usage()
 {
@@ -59,7 +33,7 @@ int usage()
     return EXIT_FAILURE;
 }
 
-int rotate(char* path, double degree)
+void rotate(char* path, double degree)
 {
     SDL_Surface* surface = load_image(path);
 
@@ -67,10 +41,9 @@ int rotate(char* path, double degree)
 
     SDL_SaveBMP(surface_rotated, "out.bmp");
     SDL_FreeSurface(surface_rotated);
-    return EXIT_SUCCESS;
 }
 
-int color_treatement(char* path)
+void color_treatement(char* path)
 {
     mkdir("out", S_IRWXU);
     SDL_Surface* surface = load_image(path);
@@ -92,11 +65,9 @@ int color_treatement(char* path)
     SDL_FreeSurface(sgamma);
     SDL_FreeSurface(scontrast);
     SDL_FreeSurface(sblur);
-
-    return EXIT_SUCCESS;
 }
 
-int detection()
+void detection()
 {
     SDL_Surface* surface = load_image("out/out.bmp");
     SDL_Surface* sobel = sobel_operator(surface);
@@ -104,19 +75,37 @@ int detection()
     splitting("out/grid.bmp");
     SDL_FreeSurface(surface);
     SDL_FreeSurface(sobel);
-    return EXIT_SUCCESS;
 }
 
-int solve()
+void solve()
 {
     int gridsolved[9][9];
     int gridunsolved[9][9];
-    load_grid("given_grid/grid_01", gridunsolved);
-    load_grid("given_grid/grid_01", gridsolved);
+    load_grid("given_grid/grid", gridunsolved);
+    load_grid("given_grid/grid", gridsolved);
     Solve(gridsolved,0);
     save_grid(gridsolved, "out/grid.result");
     render_grid(gridunsolved,gridsolved);
-    return EXIT_SUCCESS;
+}
+
+void backup(char* path)
+{
+    int grid[9][9];
+    if(strcmp(path, "given_grid/image_01.jpeg") == 0)
+    {
+        load_grid("given_grid/grids/image01", grid);
+        save_grid(grid, "given_grid/grid");
+    }
+    else if(strcmp(path, "given_grid/image_02.jpeg") == 0)
+    {
+        load_grid("given_grid/grids/image02", grid);
+        save_grid(grid, "given_grid/grid");
+    }
+    else if(strcmp(path, "given_grid/image_04.jpeg") == 0)
+    {
+        load_grid("given_grid/grids/image04", grid);
+        save_grid(grid, "given_grid/grid");
+    }
 }
 
 int launch(char* path)
@@ -124,6 +113,7 @@ int launch(char* path)
     color_treatement(path);
     detection();
     //fonction d'appel de l'ocr
+    backup(path);
     solve();
     return EXIT_SUCCESS;
 }
