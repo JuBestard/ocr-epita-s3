@@ -15,6 +15,7 @@
 #include <SDL2/SDL_surface.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "err.h"
 #include "math.h"
@@ -90,6 +91,7 @@ void solve()
 
 void backup(char* path)
 {
+    sleep(2);
     int grid[9][9];
     if(strcmp(path, "given_grid/image_01.jpeg") == 0)
     {
