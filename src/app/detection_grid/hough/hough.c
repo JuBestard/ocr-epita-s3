@@ -157,7 +157,6 @@ void hough(SDL_Surface* s)
                 accY1[maxA] = y1;
                 accX2[maxA] = x2;
                 accY2[maxA] = y2;
-                drawLine(gridlines, x1, y1, x2, y2, SDL_MapRGB(s->format, 255, 0, 0));
                 checkHorVertTmp(gridlines, x1, y1, x2, y2);
                 maxA++;
                 flagFirst = 0;

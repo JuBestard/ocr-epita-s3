@@ -72,6 +72,7 @@ void detection()
 {
     SDL_Surface* surface = load_image("out/out.bmp");
     SDL_Surface* sobel = sobel_operator(surface);
+    SDL_SaveBMP(sobel, "out/sobel.bmp");
     hough(sobel);
     splitting("out/grid.bmp");
     SDL_FreeSurface(surface);
