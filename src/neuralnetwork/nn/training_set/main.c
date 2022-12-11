@@ -23,7 +23,7 @@ double sigmoid(double x)
 }
 
 double** picture;
-int layerSizes[10] = {0,0,0,0,0,0,784,1000,1000,10};
+int layerSizes[10] = {784,1000,1000,1000,1000,1000,1000,1000,1000,10};
 double* layers[10] = {0};
 double* errors[10] = {0};
 double*  weights[10] = {0};
@@ -31,17 +31,20 @@ double*  weights[10] = {0};
 int activation = 2; // TanH
                     // INITIALIZATION
 
+int numLayers = 10;
 int test[1] = {0};
+
+int epoch = 10;
 
 void save_weight()
 {
     FILE *ptr = fopen("src/neuralnetwork/nn/training_set/weight.txt", "w");
     if (ptr == NULL)
     {
-        printf("Not enough memory\n");
+        printf("save_weight: File not found\n");
         return;
     }
-    for(int i=7;i<10;i++)
+    for(int i=11-numLayers;i<10;i++)
         for(int j=0;j<layerSizes[i]*layerSizes[i-1]+1;j++)
         {
             fprintf(ptr,"%f\n",weights[i][j]);
@@ -54,13 +57,15 @@ int load_weight()
     FILE *ptr = fopen("src/neuralnetwork/nn/training_set/weight.txt", "r");
     if (ptr == NULL)
     {
-        printf("Not enough memory\n");
+        printf("load_weight: File not found\n");
         return 0;
     }
-    for(int i=7;i<10;i++)
+    double temp;
+    for(int i=11-numLayers;i<10;i++)
         for(int j=0;j<layerSizes[i]*layerSizes[i-1]+1;j++)
         {
-            fscanf(ptr,"%lf\n",&weights[i][j]);
+            fscanf(ptr,"%lf\n",&temp);
+            weights[i][j] = temp;
         }
     fclose(ptr);
     return 1;
@@ -79,7 +84,7 @@ void initNet(){
         errors[i] = (double*)malloc(layerSizes[i] * sizeof(double));
         weights[i] = (double*)malloc(layerSizes[i] * (layerSizes[i-1]+1) * sizeof(double));
     }
-    if (!load_weight())
+    if (load_weight() == 0)
     {
         // RANDOMIZE WEIGHTS AND BIAS
         double scale;
@@ -97,25 +102,35 @@ void initNet(){
     }
 }
 
-void decrypt_picture(char* file, double*** input)
+int decrypt_picture(int k, double*** input)
 {
-    SDL_Surface* picture = IMG_Load(file);
+    char* file = "";
+    SDL_Surface* image;
+    int res = -1;
+
+    int x = ((int)rand())%3;
+    asprintf(&file,"out/save/%d_%d.bmp",k,x);
+    image = SDL_LoadBMP(file);
     if (picture  == NULL)
         errx(EXIT_FAILURE, "pls enter an existing file");
-    SDL_LockSurface(picture);
-    Uint32* pixels = picture -> pixels;
-    SDL_PixelFormat* format = picture -> format;
+    res = x;
+
+    printf("%s\n",file);
+    SDL_LockSurface(image);
+    Uint32* pixels = image -> pixels;
+    SDL_PixelFormat* format = image -> format;
     Uint8 r,g,b;
     for (int i=0;i<28;i++)
         for (int j =0;j<28;j++)
         {
             SDL_GetRGB(pixels[i*28+j],format,&r,&g,&b);
-            *(*(*(input)+i)+j) = ((r+g+b)/3);
+            //*(*(*(input)+i)+j) = ((r+g+b)/3);
+            *(*(*(input)+i)+j) = ((r+g+b)/3) >= 250 ? 0 : 255;
         }        
-    SDL_FreeSurface(picture);
+    SDL_FreeSurface(image);
+    return res;
 }
 
-int numLayers = 4;
 // FORWARD PROPAGATION
 int forwardProp(){
     int i,j,k,imax;
@@ -139,7 +154,6 @@ int forwardProp(){
             sum += layers[8][j]*weights[9][i*(layerSizes[8]+1)+j];
         if (sum>30) 
         {
-            printf("exploded");
             return -1; //GRADIENT EXPLODED
         }
         layers[9][i] = exp(sum);
@@ -153,16 +167,14 @@ int forwardProp(){
             imax = i;
         }
         layers[9][i] /= esum;
-        if(test[0]>47)
-            printf("%d = %f\n",i,layers[9][i]);
     }
     return imax;
 }
 
-double learn = 0.01;
+double learn = 0.001;
 double decay = 0.95;
 // BACKPROPAGATION
-int backProp(int x, int epoch, double *ent){
+int backProp(int x, double *ent){
     int i, j, k, r = 0;
     double der = 1.0;
     // FORWARD PROP FIRST
@@ -178,7 +190,6 @@ int backProp(int x, int epoch, double *ent){
             errors[9][i] = learn * (1-layers[9][i]);// * pow(decay,epoch);
             if (layers[9][i]==0) 
             {
-                printf("vanished");
                 return -1; // GRADIENT VANISHED
             }
             *ent = -log(layers[9][i]);
@@ -210,28 +221,79 @@ void init(double*** picture)
 
 int main()
 {
-    char* file;
-    init(&picture);
-    initNet();
-    double res;
-    int i = 0;
-    for (;i<50;i++)
-    {
-        printf("----------------epoch: %d----------------\n",i+1);
-        *test = i+1;
-        for (size_t k=0;k<=9;k++)
-        {
-            int x = ((int)rand())%306;
-            char* nb;
-            asprintf(&nb,"%d",x);
-            asprintf(&file,"%d-%s%s.png",k,strlen(nb)==1 ? "000"
-                    : strlen(nb)==2 ? "00" : "0",nb);
-            decrypt_picture(file,&picture);
-            if (i>=47)
-                printf("%s\n",file);
-            backProp(k,i,&res);
-        }
-    }
-    save_weight();
-    return EXIT_SUCCESS;
+    return 1;
 }
+//int main(int argc, char** argv)
+//{
+//    int sol[] = 
+//    {
+//        5,3,0,0,7,0,0,0,0,
+//        6,0,0,1,9,5,0,0,0,
+//        0,9,8,0,0,0,0,6,0,
+//        8,0,0,0,6,0,0,0,3,
+//        4,0,0,8,0,3,0,0,1,
+//        7,0,0,0,2,0,0,0,6,
+//        0,6,0,0,0,0,2,8,0,
+//        0,0,0,4,1,9,0,0,5,
+//        0,0,0,0,8,0,0,7,9,
+//        0,2,0,0,0,0,6,0,9,
+//        8,5,7,0,6,4,2,0,0,
+//        0,9,0,0,0,1,0,0,0,
+//        0,1,0,6,5,0,3,0,0,
+//        0,0,8,1,0,3,5,0,0,
+//        0,0,3,0,2,9,0,8,0,
+//        0,0,0,4,0,0,0,6,0,
+//        0,0,2,8,7,0,1,3,5,
+//        1,0,6,0,0,0,0,2,0,
+//        7,0,8,9,0,0,0,0,2,
+//        5,1,3,0,0,2,0,0,8,
+//        0,9,2,3,1,0,0,0,7,
+//        0,5,0,0,3,0,9,0,0,
+//        1,6,0,0,2,0,0,7,5,
+//        0,0,9,0,4,0,0,6,0,
+//        9,0,0,0,8,4,2,1,0,
+//        2,0,0,6,0,0,7,4,9,
+//        4,0,0,0,0,1,5,0,3
+//    };
+//    if (argc != 2)
+//        errx(EXIT_FAILURE,"./neuralnet <epoch>");
+//    epoch = atoi(argv[1]);
+//    init(&picture);
+//    initNet();
+//    double res;
+//    int i = 0;
+//    *test = epoch;
+//    for (;i<epoch;i++)
+//    {
+//        if ((i+1)%1==0)
+//            printf("----------------epoch: %d----------------\n",i+1);
+//        *test = i+1;
+//        for (size_t k=0;k<81;k++)
+//        {
+//            int fact = decrypt_picture(k,&picture);
+//            if (fact == -1)
+//                backProp(k%10,&res);
+//            else
+//                backProp(sol[fact*81+k],&res);
+//            if (i>=epoch-3)
+//                printf("solution is: %d\n",sol[fact*81+k]);
+//        }
+//    }
+//    //for (size_t k=0;k<=9;k++)
+//    //{
+//    //for (int k=0;k<81;k++)
+//    //{
+//    //    decrypt_picture(k,&picture);
+//    //    for(int i=0;i<28;i++)
+//    //    {
+//    //        for(int j=0;j<28;j++)
+//    //            printf("%s",picture[i][j]>=200 ? "█" : " ");
+//    //        printf("\n");
+//    //    }
+//    //    printf("this picture is %d\n",forwardProp());
+//    //}
+//    //}
+//
+//    save_weight();
+//    return EXIT_SUCCESS;
+//}
