@@ -255,7 +255,7 @@ int main(int argc, char** argv)
 
     if(argc >=3 && strcmp(argv[1], "shell") == 0)
     {
-        if(argc == 3 && strcmp(argv[2], "clean") == 0)
+        if(argc == 3 && strcmp(argv[2], "clear") == 0)
             return clear();
         if(argc == 4 && strcmp(argv[2], "resolve") == 0)
             return launch(argv[3]);
