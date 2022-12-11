@@ -1,5 +1,4 @@
 #include "ocr.h"
-#include <stdlib.h>
 GtkBuilder *builder;
 GtkWindow *mainWindow;
 GtkStack* stack;
