@@ -1,6 +1,6 @@
 CC = gcc -g -I include/
-CFLAGS = -Wall -Wextra -O2 `pkg-config --cflags sdl2 SDL2_image`
-LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
+CFLAGS = -Wall -Wextra -O2 `pkg-config --cflags sdl2 SDL2_image gtk+-3.0`
+LDLIBS = `pkg-config --libs sdl2 SDL2_image gtk+-3.0` -lm -ldl
 
 
 SRCNET = src/neuralnetwork/nn/training_set/main.c
