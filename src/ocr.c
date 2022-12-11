@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <unistd.h>
 #include <gtk/gtk.h>
 
 #include "err.h"
@@ -28,39 +29,80 @@
 
 GtkBuilder *builder;
 GtkWindow *mainWindow;
+GtkStack* stack;
+GtkWidget* selectWindow;
+GtkWidget* solveWindow;
+GtkStack* solveStack;
 
 GtkFileChooser *fileChooser;
+GtkButton *buttonSelect;
 GtkButton *buttonSolve;
 GtkButton *buttonClose;
+GtkButton *buttonSolving;
+GtkButton *buttonRotate;
 
+GtkSpinner* spinner;
+
+GFile *pathCur;
 GFile *path;
 
+GdkPixbuf *resolved;
+
+GtkImage *imageUnresolved;
 GtkImage *imageResolved;
 
-void on_close(GtkButton *buttonClose)
+void on_stack_solve()
 {
-  gtk_window_close(mainWindow);
+  gtk_stack_set_visible_child(stack, solveWindow);
 }
 
-void on_solve(GtkButton *buttonSolve)
+void on_stack_select()
+{
+  gtk_stack_set_visible_child(stack, selectWindow);
+}
+
+void on_solve()
 {
   if (path != NULL)
     {
-      char *textpath = "given_grid/image_01.jpeg"; //g_file_get_relative_path(parent, path);
-      launch(textpath);
-    }
+      gtk_stack_set_visible_child(solveStack, GTK_WIDGET(spinner));
 
-  gtk_image_set_from_file(imageResolved, "out/resolve.bmp");
+      gtk_spinner_start(spinner);
+      
+      char *textpath = g_file_get_relative_path(pathCur, path);
+      launch(textpath);
+      g_free(textpath);
+
+      resolved = gdk_pixbuf_new_from_file_at_scale("out/resolve.bmp", 500, 500, TRUE, NULL);
+
+      gtk_image_set_from_pixbuf(imageResolved, resolved);
+
+      gtk_spinner_stop(spinner);
+
+      gtk_stack_set_visible_child(solveStack, GTK_WIDGET(imageResolved));
+    }
+}
+
+void on_rotate()
+{
+  if (resolved)
+    {
+      resolved = gdk_pixbuf_rotate_simple(resolved, GDK_PIXBUF_ROTATE_CLOCKWISE);
+
+      gtk_image_set_from_pixbuf(imageResolved, resolved);
+    }
 }
 
 void on_choice(GtkFileChooser *fileChooser)
 {
-  path = gtk_file_chooser_get_current_folder_file(fileChooser);
+  path = gtk_file_chooser_get_file(fileChooser);
 
   char *textpath = g_file_get_path(path);
-  
-  gtk_image_set_from_file(imageResolved, textpath);
 
+  GdkPixbuf* unresolved = gdk_pixbuf_new_from_file_at_scale(textpath, 500, 500, TRUE, NULL);
+
+  gtk_image_set_from_pixbuf(imageUnresolved, unresolved);
+  
   g_free(textpath);
 }
 
@@ -186,20 +228,37 @@ int main(int argc, char** argv)
 	  }
 	
 	mainWindow = GTK_WINDOW(gtk_builder_get_object(builder, "mainWindow"));
+	stack = GTK_STACK(gtk_builder_get_object(builder, "stack"));
+	solveStack = GTK_STACK(gtk_builder_get_object(builder, "solveStack"));
 	
-	GtkButton* buttonTest = GTK_BUTTON(gtk_builder_get_object(builder, "buttonTest"));
+	selectWindow = GTK_WIDGET(gtk_builder_get_object(builder, "selectWindow"));
+	solveWindow = GTK_WIDGET(gtk_builder_get_object(builder, "solveWindow"));
+        
 	fileChooser = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "fileChooser"));
+	buttonSelect = GTK_BUTTON(gtk_builder_get_object(builder, "buttonSelect"));
 	buttonSolve = GTK_BUTTON(gtk_builder_get_object(builder, "buttonSolve"));
 	buttonClose = GTK_BUTTON(gtk_builder_get_object(builder, "buttonClose"));
-	
+	buttonSolving = GTK_BUTTON(gtk_builder_get_object(builder, "buttonSolving"));
+	buttonRotate = GTK_BUTTON(gtk_builder_get_object(builder, "buttonRotate"));
+	spinner = GTK_SPINNER(gtk_builder_get_object(builder, "spin"));
+
+	GtkImage* imageLogo = GTK_IMAGE(gtk_builder_get_object(builder, "logo"));
+	gtk_image_set_from_file(imageLogo, "logo.png");
 	imageResolved = GTK_IMAGE(gtk_builder_get_object(builder, "imageResolved"));
+	imageUnresolved = GTK_IMAGE(gtk_builder_get_object(builder, "imageUnresolved"));
 	path = NULL;
+        char *cwd = malloc(200 * sizeof(char));
+        cwd = getcwd(cwd, 200);
+        pathCur = g_file_new_for_path(cwd);
+        free(cwd);
 	
 	g_signal_connect(mainWindow, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-        
 	g_signal_connect(fileChooser, "file-set", G_CALLBACK(on_choice), NULL);
-	g_signal_connect(buttonSolve, "clicked", G_CALLBACK(on_solve), NULL);
-	g_signal_connect(buttonClose, "clicked", G_CALLBACK(on_close), NULL);
+	g_signal_connect(buttonSolve, "clicked", G_CALLBACK(on_stack_solve), NULL);
+	g_signal_connect(buttonClose, "clicked", G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(buttonSelect, "clicked", G_CALLBACK(on_stack_select), NULL);
+	g_signal_connect(buttonSolving, "clicked", G_CALLBACK(on_solve), NULL);
+	g_signal_connect(buttonRotate, "clicked", G_CALLBACK(on_rotate), NULL);
 	
 	gtk_main();
 	
