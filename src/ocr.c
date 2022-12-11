@@ -230,7 +230,7 @@ int main(int argc, char** argv)
 	    spinner = GTK_SPINNER(gtk_builder_get_object(builder, "spin"));
 
 	    GtkImage* imageLogo = GTK_IMAGE(gtk_builder_get_object(builder, "logo"));
-	    gtk_image_set_from_file(imageLogo, "logo.png");
+	    gtk_image_set_from_file(imageLogo, "src/logo.png");
 	    imageResolved = GTK_IMAGE(gtk_builder_get_object(builder, "imageResolved"));
 	    imageUnresolved = GTK_IMAGE(gtk_builder_get_object(builder, "imageUnresolved"));
 	    path = NULL;
