@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -O2 `pkg-config --cflags sdl2 SDL2_image`
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm -ldl
 
 
-SRCNET = src/neuralnetwork/xor/neuron.c src/neuralnetwork/xor/xor.c
+SRCNET = src/neuralnetwork/nn/training_set/main.c
 OBJNET = ${SRCNET:.c=.o}
 DEPNET = ${SRCNET:.c=.d}
 PRGNET = neuralnet
@@ -21,7 +21,7 @@ PRGAPP = ocr
 all: ${PRGAPP} ${PRGNET} ${PRGSOL}
 
 ${PRGNET}: ${OBJNET}
-	$(CC)  -o $(PRGNET) $(OBJNET) -lm -ldl
+	$(CC)  $(CFLAGS) -o $(PRGNET) $(OBJNET) $(LDLIBS)
 
 #${PRGSOL}: ${OBJSOL}
 #	$(CC) $(CFLAGS) -o $(PRGSOL) $(OBJNET) $(LDLIBS)
@@ -36,4 +36,4 @@ clean:
 	${RM} ${OBJAPP} ${OBJNET} ${OBJSOL}
 	${RM} ${DEPAPP} ${DEPNET} ${DEPSOL}
 	${RM} ${PRGAPP} ${PRGNET} ${PRGSOL}
-	rm -rf out/ given_grid/*.result
+	rm -rf *.png out/ given_grid/*.result

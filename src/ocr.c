@@ -115,7 +115,6 @@ int launch(char* path)
 {
     color_treatement(path);
     detection();
-    //fonction d'appel de l'ocr
     backup(path);
     solve();
     return EXIT_SUCCESS;
